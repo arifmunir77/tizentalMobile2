@@ -6,23 +6,15 @@ import CheckBox from '@react-native-community/checkbox';
 import RadioButton from '../../components/RadioButton';
 import {TouchableOpacity} from 'react-native';
 import {useAppState} from '../../hooks/useAppState';
-import {useForm,} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 
 const Leads = ({currentStep, setCurrentStep}) => {
   const [stepValues, setStepValues] = useAppState();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [leadsDetailsArr, setLeadsDetailsArr] = useState(['financeProj']);
+  const [leadsDetailsArr, setLeadsDetailsArr] = useState([]);
 
-  console.log('checking', leadsDetailsArr);
-
-  // console.log('leddd', leadsDetailsArr);
-
-  //   const leadsDetailsArr = ["data1", "data2", "data3"];
-
-  // const hasData = leadsDetailsArr.includes("data1");
-
-  // console.log("daaa",hasData);
+  
 
   const {
     register,
@@ -32,19 +24,11 @@ const Leads = ({currentStep, setCurrentStep}) => {
     watch,
     reset,
     setValue,
-    ar,
+   
   } = useForm({
     defaultValues: {...stepValues, ...{isSendReport: 'True'}},
     mode: 'onSubmit',
   });
-
-  // const [leadsDetailsArr, setLeadsDetailsArr] = useState({
-  //   constructionBids: false,
-  //   dueDiligence: false,
-  //   needAgentsBrokers: false,
-  //   fuelDistributorsSuppliers: false,
-  //   insuranceQuotes: false,
-  // });
 
   const handleCheckBoxChange = key => {
     setLeadsDetailsArr(prevState => ({
@@ -53,37 +37,14 @@ const Leads = ({currentStep, setCurrentStep}) => {
     }));
   };
 
-  const [checked, setChecked] = useState(false);
-
   const submit = data => {
     let req = {...stepValues, ...data, leadsDetailsArr};
 
     console.log('requess', req);
     setStepValues(req);
 
+     setCurrentStep(currentStep+1)
     let serviceUrl = `/getCommercialReportInput/`;
-    setIsLoading(true);
-    axiosInstance
-      .post(serviceUrl, req, {headers: {'Content-Type': 'multipart/form-data'}})
-      .then(function (response) {
-        let responseObj = response.data;
-        setStepValues({
-          ...stepValues,
-
-          ...{
-            reportPath: responseObj.reportPath,
-            valuation: responseObj.valuation,
-            forecast: responseObj.forecast,
-          },
-        });
-        setCurrentStep(currentStep + 1);
-      })
-      .catch(function (response) {
-        console.log(response);
-      })
-      .finally(function (e) {
-        setIsLoading(false);
-      });
   };
 
   return (
@@ -136,7 +97,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
                   );
                 }
               }}
-              value={leadsDetailsArr.includes('financeProj')}
+              value={leadsDetailsArr?.includes('financeProj')}
             />
             <Text style={styles.CheckBoxLabel}>
               {' '}
@@ -154,7 +115,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
                   );
                 }
               }}
-              value={leadsDetailsArr.includes('constBids')}
+              value={leadsDetailsArr?.includes('constBids')}
             />
             <Text style={styles.CheckBoxLabel}> Construction Bids</Text>
           </View>
@@ -171,7 +132,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
                   );
                 }
               }}
-              value={leadsDetailsArr.includes('dueDiligence')}
+              value={leadsDetailsArr?.includes('dueDiligence')}
             />
             <Text style={styles.CheckBoxLabel}>Due Diligence for site</Text>
           </View>
@@ -188,7 +149,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
                   );
                 }
               }}
-              value={leadsDetailsArr.includes('needAgents')}
+              value={leadsDetailsArr?.includes('needAgents')}
             />
             <Text style={styles.CheckBoxLabel}>Need Agents/Brokers</Text>
           </View>
@@ -205,7 +166,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
                   );
                 }
               }}
-              value={leadsDetailsArr.includes('fuelDistri')}
+              value={leadsDetailsArr?.includes('fuelDistri')}
             />
             <Text style={styles.CheckBoxLabel}>
               Fuel Distributors/Suppliers
@@ -224,7 +185,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
                   );
                 }
               }}
-              value={leadsDetailsArr.includes('insuranceQuotes')}
+              value={leadsDetailsArr?.includes('insuranceQuotes')}
             />
             <Text style={styles.CheckBoxLabel}>Insurance Quotes</Text>
           </View>

@@ -59,7 +59,7 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
           <View style={styles.fieldContainer}>
             <TextInput
               style={styles.input}
-              // keyboardType="numeric"
+             keyboardType="numeric"
               placeholder="Site Area in sq. ft"
               value={watch('totalAreaSqFt')}
               name="totalAreaSqFt"
@@ -84,7 +84,7 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('totalCurbCuts', value);
               }}
-              // keyboardType="numeric"
+               keyboardType="numeric"
               placeholder="totalCurbCuts"
             />
             {errors?.totalAreaSqFt && (

@@ -75,7 +75,7 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
       const response = await Geocoding.from(latitude, longitude);
       const {results} = response;
       const address = results[1].formatted_address;
-
+      setValue('compAddress', address);
       setCompanyAddress(address);
     } catch (error) {
       console.error('Error converting coordinates to address:', error);
@@ -201,7 +201,7 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
         <Button title="Get Location" onPress={zoomIn} />
         {/* Display MapView with Marker */}
 
-        {/* <MapView
+        <MapView
           style={styles.map}
           region={region}
           provider={PROVIDER_GOOGLE}
@@ -211,7 +211,7 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
             setSelectedLocation({latitude, longitude});
           }}>
           {selectedLocation && <Marker coordinate={selectedLocation} />}
-        </MapView> */}
+        </MapView>
 
         <View style={styles.buttonContainer}>
           {currentStep > 1 && (
