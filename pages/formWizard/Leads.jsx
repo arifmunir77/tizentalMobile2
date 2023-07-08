@@ -7,6 +7,7 @@ import RadioButton from '../../components/RadioButton';
 import {TouchableOpacity} from 'react-native';
 import {useAppState} from '../../hooks/useAppState';
 import {useForm} from 'react-hook-form';
+import axios from 'axios';
 
 const Leads = ({currentStep, setCurrentStep}) => {
   const [stepValues, setStepValues] = useAppState();
@@ -14,21 +15,11 @@ const Leads = ({currentStep, setCurrentStep}) => {
 
   const [leadsDetailsArr, setLeadsDetailsArr] = useState([]);
 
-  
-
-  const {
-    register,
-    setError,
-    handleSubmit,
-    formState,
-    watch,
-    reset,
-    setValue,
-   
-  } = useForm({
-    defaultValues: {...stepValues, ...{isSendReport: 'True'}},
-    mode: 'onSubmit',
-  });
+  const {register, setError, handleSubmit, formState, watch, reset, setValue} =
+    useForm({
+      defaultValues: {...stepValues, ...{isSendReport: 'True'}},
+      mode: 'onSubmit',
+    });
 
   const handleCheckBoxChange = key => {
     setLeadsDetailsArr(prevState => ({
@@ -43,8 +34,32 @@ const Leads = ({currentStep, setCurrentStep}) => {
     console.log('requess', req);
     setStepValues(req);
 
-     setCurrentStep(currentStep+1)
+    //  setCurrentStep(currentStep+1)
     let serviceUrl = `/getCommercialReportInput/`;
+
+    axios
+      .post('https://tezintel.com/api/getCommercialReportInput/', req, {
+        headers: {'Content-Type': 'multipart/form-data'},
+      })
+      .then(function (response) {
+        // handle success
+        console.log('res', res, response?.data);
+
+        let responseObj = response.data;
+        setStepValues({
+          ...stepValues,
+          ...{
+            reportPath: responseObj.reportPath,
+            valuation: responseObj.valuation,
+            forecast: responseObj.forecast,
+          },
+        });
+        setCurrentStep(currentStep + 1);
+      })
+      .catch(function (error) {
+        // handle error
+        alert(error.message);
+      });
   };
 
   return (

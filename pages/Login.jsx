@@ -12,8 +12,10 @@ import FocusedStatusBar from '../components/FocusedStatusBar';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import * as Yup from 'yup';
- 
-// import {useAuth} from '../hooks/useAuth';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import axios from 'axios';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required('Required'),
@@ -22,19 +24,30 @@ const validationSchema = Yup.object().shape({
 
 const Login = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   // const {signIn} = useAuth();
 
   const {register, setError, handleSubmit, formState, setValue, reset, watch} =
     useForm({
       mode: 'onSubmit',
-      
+      resolver: yupResolver(validationSchema),
     });
   const {errors} = formState;
-  // resolver: yupResolver(validationSchema),
+
   // console.log(errors);
+
+  const saveLoginData = async response => {
+    try {
+      console.log('rsss', response);
+
+      await AsyncStorage.setItem('access_token', response?.access);
+      await AsyncStorage.setItem('refresh_token', response?.refresh);
+
+      console.log('Login data saved successfully.');
+    } catch (error) {
+      console.log('Failed to save login data:', error);
+    }
+  };
 
   const handleLogin = () => {
     navigation.navigate('Evalutation');
@@ -48,33 +61,23 @@ const Login = () => {
     navigation.navigate('Forget-Pasword');
   };
 
-  // const loginSubmit = data => {
-  //   console.log("daa",data);
-  //   const req = data;
-  //   delete req['passwordwrong'];
-  //   // setIsSubmitting(true);
-  //   signIn(req)
-  //     .then(function (response) {
-  //       console.log('res', response);
-  //       reset();
-  //     })
-  //     .catch(function (error) {
-  //       // setError(
-  //       //   "passwordwrong",
-  //       //   { type: "custom", message: error.response.data.detail },
-  //       //   { shouldFocus: false }
-  //       // );
-  //       console.log(error);
-  //     })
-  //     .then(function () {
-  //       // setIsSubmitting(false);
-  //     });
-  // };
-
-  const loginSubmit = async () => {
+  const loginSubmit = async data => {
     try {
-    navigation.navigate('Evalutation');
-     
+  
+      // navigation.navigate('Evalutation');
+
+      axios
+        .post('https://tezintel.com/api/accounts/login/', data)
+        .then(function (response) {
+          // handle success
+          console.log('res', response?.data);
+          saveLoginData(response.data);
+          navigation.navigate('Evalutation');
+        })
+        .catch(function (error) {
+          // handle error
+          alert(error.message);
+        });
     } catch (error) {
       // Handle error here
       console.error(error);
@@ -204,7 +207,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold', 
+    fontWeight: 'bold',
   },
   signupText: {
     marginTop: 10,
