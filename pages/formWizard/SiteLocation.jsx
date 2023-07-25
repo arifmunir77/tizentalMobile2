@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   TextInput,
@@ -8,9 +8,11 @@ import {
   ScrollView,
 } from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import Geocoding from 'react-native-geocoding';
+import Geocoding, {geocodeByAddress} from 'react-native-geocoding';
 import {TouchableOpacity} from 'react-native';
 import {useAppState} from '../../hooks/useAppState';
+
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 import {yupResolver} from '@hookform/resolvers/yup';
 
@@ -18,22 +20,18 @@ import * as yup from 'yup';
 
 const schema = yup.object().shape({
   reportTitle: yup.string().required('Report Title is required'),
-  state: yup.string().required('State is required'),
-  city: yup.string().required('City is required'),
-  zipCode: yup.string().required('Zip Code is required'),
   compAddress: yup.string().required('Company Address is required'),
 });
 
 import {useForm} from 'react-hook-form';
 import {mergeObjs} from '../../utils/ObjectUtils';
 
-import {SelectList} from 'react-native-dropdown-select-list';
-import {StatesData, cityData} from '../../data/cityData';
+import StepsComponent from '../../components/StepsComponent';
 
 const SiteLocation = ({currentStep, setCurrentStep}) => {
   const [stepValues, setStepValues] = useAppState();
 
-  console.log('locaSte', stepValues);
+  console.log('siteLocation', stepValues);
 
   const {
     register,
@@ -60,180 +58,150 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
   const [region, setRegion] = React.useState({
     latitude: center.lat,
     longitude: center.lng,
-    latitudeDelta: 0.0922, // Adjust the zoom level as needed
-    longitudeDelta: 0.0421, // Adjust the zoom level as needed
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
   });
 
   const [selectedLocation, setSelectedLocation] = React.useState(null);
 
-  Geocoding.init('AIzaSyAHD9fCB1tlmFBQufvl_uTkd-WIICNXtwk');
+  Geocoding.init('AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s');
 
-  const [companyAddress, setCompanyAddress] = React.useState('');
-
-  const convertToCompanyAddress = async (latitude, longitude) => {
-    try {
-      const response = await Geocoding.from(latitude, longitude);
-      const {results} = response;
-      const address = results[1].formatted_address;
-      setValue('compAddress', address);
-      setCompanyAddress(address);
-    } catch (error) {
-      console.error('Error converting coordinates to address:', error);
-    }
-  };
-
-  React.useEffect(() => {
-    if (selectedLocation) {
-      convertToCompanyAddress(
-        selectedLocation.latitude,
-        selectedLocation.longitude,
-      );
-    }
-  }, [selectedLocation]);
-
-  const zoomIn = () => {
-    const zoomLevel = 0.005; // Adjust the zoom level as needed
-
-    const newRegion = {
-      ...region,
-      latitudeDelta: region.latitudeDelta / 0.2,
-      longitudeDelta: region.longitudeDelta / 0.2,
-    };
-    setRegion(newRegion);
-  };
+  const mapRef = useRef();
+  const locationRef = useRef();
 
   const submit = data => {
+    console.log('daaa', data);
     setStepValues({...stepValues, ...data});
     setCurrentStep(currentStep + 1);
   };
 
-  const [cityDefauldData, setcityDefaultData] = useState(null);
-  const [stateDefauldData, setstateDefaultData] = useState(null);
+  const moveToLocation = async (latitude, longitude) => {
+    try {
+      mapRef.current.animateToRegion(
+        {
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 0.015,
+          longitudeDelta: 0.0121,
+        },
+        2000,
+      );
+
+      setSelectedLocation({latitude, longitude});
+    } catch (error) {
+      console.log('errr', error);
+    }
+  };
+
+  const handlePrevStep = () => {
+    setCurrentStep(currentStep - 1);
+  };
+
+  const handleNextStep = () => {
+    handleSubmit(submit)();
+  };
+
+  console.log('setAddressText', locationRef);
 
   useEffect(() => {
-    let selectedCityData = stepValues?.city;
-    let selectedStateData = stepValues?.state;
+    if (stepValues.compAddress) {
+      let add = stepValues?.compAddress;
 
-    if (selectedCityData) {
-      let data = cityData.find(item => item.value == selectedCityData);
+      add && locationRef?.current?.setAddressText(add);
 
-      setcityDefaultData(data);
-    }
-    if (selectedStateData) {
-      let data = StatesData.find(item => item.value == selectedStateData);
+      let lat = stepValues?.lat ;
+      let lng = stepValues?.lng ;
 
-      setstateDefaultData(data);
+      console.log('latt', lat, lng);
+
+      mapRef.current.animateToRegion(
+        {
+          latitude:   lat,
+          longitude:   lng,
+          latitudeDelta: 0.015,
+          longitudeDelta: 0.0121,
+        },
+        2000,
+      );
+
+      // if (lat && lng) {
+      //   setSelectedLocation({lat, lng});
+      // }
     }
   }, [stepValues]);
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="Report Title"
           name={'reportTitle'}
+          value={watch('reportTitle')}
           onChangeText={value => {
             setValue('reportTitle', value);
           }}
         />
-
         {errors?.reportTitle && (
           <Text style={styles.errorText}> {errors?.reportTitle?.message}</Text>
         )}
-        <View style={styles.SelectDropdownContainer}>
-          <SelectList
-            setSelected={val => setValue('state', val)}
-            defaultOption={stateDefauldData}
-            data={StatesData}
-            placeholder="Select State"
-            // defaultOption={{key: '1', name:"Jammu & Kashmir", value: 'Jammu & Kashmir'}} //default selected option
-          />
-
-          {errors?.state && (
-            <Text style={styles.errorText}> {errors?.state?.message}</Text>
-          )}
-        </View>
-
-        <View style={styles.SelectDropdownContainer}>
-          <SelectList
-            setSelected={val => {
-              setValue('city', val);
-            }}
-            data={cityData}
-            save="value"
-            placeholder="Select City"
-            defaultOption={cityDefauldData}
-          />
-
-          {errors?.city && (
-            <Text style={styles.errorText}> {errors?.city?.message}</Text>
-          )}
-        </View>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Zip Code"
-          name={'zipCode'}
-          onChangeText={value => {
-            setValue('zipCode', value);
-          }}
-          value={watch('zipCode')}
-        />
-
-        {errors?.zipCode && (
-          <Text style={styles.errorText}> {errors?.zipCode?.message}</Text>
-        )}
-
-        <TextInput
-          style={styles.input}
-          placeholder="Company Address"
-          value={watch('compAddress')}
-          name={'compAddress'}
-          onChangeText={value => {
-            setValue('compAddress', value);
-          }}
-        />
-
-        {errors?.compAddress && (
-          <Text style={styles.errorText}> {errors?.compAddress?.message}</Text>
-        )}
-        <Button title="Get Location" onPress={zoomIn} />
-        {/* Display MapView with Marker */}
-
-        <MapView
-          style={styles.map}
-          region={region}
-          provider={PROVIDER_GOOGLE}
-          onRegionChangeComplete={region => setRegion(region)}
-          onPress={event => {
-            const {latitude, longitude} = event.nativeEvent.coordinate;
-            setSelectedLocation({latitude, longitude});
-          }}>
-          {selectedLocation && <Marker coordinate={selectedLocation} />}
-        </MapView>
-
-        <View style={styles.buttonContainer}>
-          {currentStep > 1 && (
-            <TouchableOpacity
-              style={styles.prevButton}
-              onPress={() => {
-                setCurrentStep(currentStep - 1);
-              }}>
-              <Text style={styles.buttonText}>Previous</Text>
-            </TouchableOpacity>
-          )}
-
-          {currentStep < 7 && (
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={handleSubmit(submit)}>
-              <Text style={styles.buttonText}>Next</Text>
-            </TouchableOpacity>
-          )}
-        </View>
       </View>
-    </ScrollView>
+
+      <View style={{zIndex: 1, flex: 1}}>
+        <GooglePlacesAutocomplete
+          placeholder="Search Place"
+          debounce={400}
+          query={{
+            key: 'AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s',
+            language: 'en',
+          }}
+          fetchDetails={true}
+          ref={locationRef}
+          // listViewDisplayed={true}
+
+          onPress={(item, details = null) => {
+            moveToLocation(
+              details?.geometry?.location?.lat,
+              details?.geometry?.location?.lng,
+            );
+            console.log('item', item?.structured_formatting);
+            setValue('compAddressFull', item);
+            setValue('lat', details?.geometry?.location?.lat);
+            setValue('lng', details?.geometry?.location?.lng);
+            setValue(
+              'compAddress',
+              item?.structured_formatting?.main_text +
+                ' ' +
+                item?.structured_formatting?.secondary_text,
+            );
+          }}
+          onFail={error => console.error(error)}
+          styles={{height: 300}}
+        />
+      </View>
+
+      <MapView
+        style={styles.map}
+        zoomEnabled={true}
+        region={region}
+        ref={mapRef}
+        provider={PROVIDER_GOOGLE}
+        zoomControlEnabled={true}
+        showsUserLocation={true}
+        followsUserLocation={true}
+        moveOnMarkerPress={true}
+        showsMyLocationButton={true}>
+        {selectedLocation && <Marker coordinate={selectedLocation} />}
+      </MapView>
+
+      <View style={{flex: 1, justifyContent: 'flex-end', marginTop: 10}}>
+        <StepsComponent
+          currentStep={currentStep}
+          handlePrevStep={handlePrevStep}
+          handleNextStep={handleNextStep}
+        />
+      </View>
+    </View>
   );
 };
 
@@ -242,18 +210,28 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+
   input: {
-    height: 40,
+    // height: 40,
     borderWidth: 1,
-    borderColor: 'gray',
-    marginBottom: 16,
-    paddingHorizontal: 8,
+    borderColor: '#000',
+    marginBottom: 3,
+    borderRadius: 5,
+    paddingHorizontal: 5,
+    backgroundColor: 'white',
+  },
+  inputContainer: {
+    zIndex: 1,
   },
 
   map: {
     flex: 1,
-    marginTop: 16,
-    height: 200,
+    // marginBottom: 50,
+    ...StyleSheet.absoluteFill,
+    height: 360,
+    marginTop: 150,
+
+    // zIndex: 0,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -285,7 +263,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    marginBottom: 20,
   },
   SelectDropdownContainer: {
     marginBottom: 10,

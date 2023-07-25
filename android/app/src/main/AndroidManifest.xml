@@ -3,6 +3,12 @@
        <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA"/>
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+        <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
@@ -25,6 +31,6 @@
 
             <meta-data
         android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyAHD9fCB1tlmFBQufvl_uTkd-WIICNXtwk" />
+        android:value="AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s" />
     </application>
 </manifest>
