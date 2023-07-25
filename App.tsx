@@ -13,7 +13,8 @@ import ForgotPassword from './pages/ForgetScreen';
 import {AppProvider} from './hooks/useAppState';
 import FormWizardScreen from './pages/formWizard/FormWizard';
 import ResidentialWizard from './pages/formWizard/ResidentialWizard';
- 
+import ReportView from './pages/formWizard/ReportView';
+
 const App = () => {
   const Stack = createNativeStackNavigator();
 
@@ -27,16 +28,15 @@ const App = () => {
           initialRouteName="Login">
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Login" component={Login} />
-
           <Stack.Screen name="Evalutation" component={EvaluationScreen} />
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="Forget-Pasword" component={ForgotPassword} />
           <Stack.Screen name="Form-Wizard" component={FormWizardScreen} />
-
+          <Stack.Screen name="Report" component={ReportView} />
           <Stack.Screen
-              name="Residential-Wizard"
-              component={ResidentialWizard}
-            />
+            name="Residential-Wizard"
+            component={ResidentialWizard}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </AppProvider>

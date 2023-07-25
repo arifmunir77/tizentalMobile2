@@ -93,8 +93,8 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
             <Text style={styles.label}>Average Curb Cut Size ?</Text>
             <Slider
               style={{height: 40}}
-              minimumValue={0}
-              maximumValue={13}
+              minimumValue={5}
+              maximumValue={40}
               minimumTrackTintColor="#000000"
               maximumTrackTintColor="#000000"
               onValueChange={val => {

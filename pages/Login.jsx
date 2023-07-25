@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import axios from 'axios';
+import Loader from './formWizard/Loader';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required('Required'),
@@ -24,6 +25,8 @@ const validationSchema = Yup.object().shape({
 
 const Login = () => {
   const navigation = useNavigation();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // const {signIn} = useAuth();
 
@@ -63,8 +66,7 @@ const Login = () => {
 
   const loginSubmit = async data => {
     try {
-  
-      // navigation.navigate('Evalutation');
+      setIsLoading(true);
 
       axios
         .post('https://tezintel.com/api/accounts/login/', data)
@@ -73,20 +75,24 @@ const Login = () => {
           console.log('res', response?.data);
           saveLoginData(response.data);
           navigation.navigate('Evalutation');
+          setIsLoading(false);
         })
         .catch(function (error) {
           // handle error
           alert(error.message);
+          setIsLoading(false);
         });
     } catch (error) {
       // Handle error here
       console.error(error);
+      setIsLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
       <FocusedStatusBar />
+      {isLoading && <Loader />}
 
       <View style={styles.loginInfoContainer}>
         <View style={styles.logoContainer}>
