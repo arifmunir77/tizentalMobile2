@@ -31,7 +31,8 @@ const Leads = ({currentStep, setCurrentStep}) => {
   const submit = data => {
     let req = {...stepValues, ...data, leadsDetailsArr};
 
-    console.log('requess', req);
+    console.log('resaaa', req);
+
     setStepValues(req);
 
     //  setCurrentStep(currentStep+1)
@@ -43,7 +44,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
       })
       .then(function (response) {
         // handle success
-        console.log('res', res, response?.data);
+        console.log('res', response, response?.data);
 
         let responseObj = response.data;
         setStepValues({
@@ -58,6 +59,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
       })
       .catch(function (error) {
         // handle error
+        console.log('errr', error);
         alert(error.message);
       });
   };
@@ -213,8 +215,8 @@ const Leads = ({currentStep, setCurrentStep}) => {
           <View style={{marginTop: 15}}>
             <RadioButton
               label="Yes"
-              value="yes"
-              checked={watch('isSendReport') == 'yes'}
+              value="True"
+              checked={watch('isSendReport') == 'True'}
               name={'isSendReport'}
               onChange={val => {
                 setValue('isSendReport', val);
@@ -222,8 +224,8 @@ const Leads = ({currentStep, setCurrentStep}) => {
             />
             <RadioButton
               label="No"
-              value="no"
-              checked={watch('isSendReport') == 'no'}
+              value="False"
+              checked={watch('isSendReport') == 'False'}
               name={'isSendReport'}
               onChange={val => {
                 setValue('isSendReport', val);

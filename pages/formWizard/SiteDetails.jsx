@@ -24,8 +24,6 @@ const schema = yup.object().shape({
 const SiteDetails = ({currentStep, setCurrentStep}) => {
   const [stepValues, setStepValues] = useAppState();
 
-  console.log('stepValues', stepValues);
-
   const {register, setError, handleSubmit, formState, watch, reset, setValue} =
     useForm({
       defaultValues: mergeObjs(stepValues, {
@@ -35,6 +33,8 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
         foodSalesPerMonth: 0,
         carWashSalesPerMonth: 0,
         cStoreSalePerMonth: 0,
+        priFrontFootage: 10,
+        secFrontFootage: 10,
       }),
       mode: 'onSubmit',
       resolver: yupResolver(schema),
@@ -42,13 +42,9 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
   const {errors} = formState;
 
   const submit = data => {
-    console.log('formData', data);
-
     setStepValues({...stepValues, ...data});
     setCurrentStep(currentStep + 1);
   };
-
-  console.log('watchh', watch('totalAreaSqFt'));
 
   return (
     <View style={styles.container}>
@@ -59,7 +55,6 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
           <View style={styles.fieldContainer}>
             <TextInput
               style={styles.input}
-             keyboardType="numeric"
               placeholder="Site Area in sq. ft"
               value={watch('totalAreaSqFt')}
               name="totalAreaSqFt"
@@ -84,7 +79,6 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('totalCurbCuts', value);
               }}
-               keyboardType="numeric"
               placeholder="totalCurbCuts"
             />
             {errors?.totalAreaSqFt && (
@@ -182,7 +176,6 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
                   setValue('cStoreSalePerMonth', value);
                 }}
                 value={watch('cStoreSalePerMonth')}
-                // keyboardType="numeric"
                 placeholder="C-Store Per Month"
               />
             </View>
@@ -194,7 +187,6 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
                   setValue('foodSalesPerMonth', value);
                 }}
                 value={watch('foodSalesPerMonth')}
-                // keyboardType="numeric"
                 placeholder="Food Sales (per month)"
               />
             </View>
@@ -207,7 +199,6 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
                   setValue('carWashSalesPerMonth', value);
                 }}
                 value={watch('carWashSalesPerMonth')}
-                // keyboardType="numeric"
                 placeholder="Car Wash (per month)"
               />
             </View>

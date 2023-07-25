@@ -31,8 +31,6 @@ import StepsComponent from '../../components/StepsComponent';
 const SiteLocation = ({currentStep, setCurrentStep}) => {
   const [stepValues, setStepValues] = useAppState();
 
-  console.log('siteLocation', stepValues);
-
   const {
     register,
     setError,
@@ -49,15 +47,13 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
   });
   const {errors} = formState;
 
-  console.log('eer', errors);
-
   const center = {
     lat: 29.47873429689,
-    lng: -95.14606596,
+    lon: -95.14606596,
   };
   const [region, setRegion] = React.useState({
     latitude: center.lat,
-    longitude: center.lng,
+    longitude: center.lon,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
@@ -70,7 +66,6 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
   const locationRef = useRef();
 
   const submit = data => {
-    console.log('daaa', data);
     setStepValues({...stepValues, ...data});
     setCurrentStep(currentStep + 1);
   };
@@ -101,32 +96,33 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
     handleSubmit(submit)();
   };
 
-  console.log('setAddressText', locationRef);
-
   useEffect(() => {
-    if (stepValues.compAddress) {
-      let add = stepValues?.compAddress;
+    if (stepValues) {
+      let address = stepValues?.compAddress;
 
-      add && locationRef?.current?.setAddressText(add);
+      address && locationRef?.current?.setAddressText(address);
 
-      let lat = stepValues?.lat ;
-      let lng = stepValues?.lng ;
+      let lat = stepValues?.lat;
+      let lon = stepValues?.lon;
 
-      console.log('latt', lat, lng);
-
-      mapRef.current.animateToRegion(
-        {
-          latitude:   lat,
-          longitude:   lng,
+      if (lat && lon) {
+        mapRef.current.animateToRegion(
+          {
+            latitude: lat,
+            longitude: lon,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.0121,
+          },
+          2000,
+        );
+        setSelectedLocation({latitude: lat, longitude: lon});
+        setRegion({
+          latitude: lat,
+          longitude: lon,
           latitudeDelta: 0.015,
           longitudeDelta: 0.0121,
-        },
-        2000,
-      );
-
-      // if (lat && lng) {
-      //   setSelectedLocation({lat, lng});
-      // }
+        });
+      }
     }
   }, [stepValues]);
 
@@ -147,7 +143,7 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
         )}
       </View>
 
-      <View style={{zIndex: 1, flex: 1}}>
+      <View style={{zIndex: 1, flex: 1, height: '100%'}}>
         <GooglePlacesAutocomplete
           placeholder="Search Place"
           debounce={400}
@@ -157,17 +153,16 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
           }}
           fetchDetails={true}
           ref={locationRef}
-          // listViewDisplayed={true}
-
+          listViewDisplayed={true}
           onPress={(item, details = null) => {
             moveToLocation(
               details?.geometry?.location?.lat,
               details?.geometry?.location?.lng,
             );
-            console.log('item', item?.structured_formatting);
-            setValue('compAddressFull', item);
+            console.log('details?.geometry?.location',details?.geometry?.location);
+
             setValue('lat', details?.geometry?.location?.lat);
-            setValue('lng', details?.geometry?.location?.lng);
+            setValue('lon', details?.geometry?.location?.lng);
             setValue(
               'compAddress',
               item?.structured_formatting?.main_text +
@@ -176,7 +171,7 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
             );
           }}
           onFail={error => console.error(error)}
-          styles={{height: 300}}
+          styles={{height: 400}}
         />
       </View>
 
@@ -213,9 +208,9 @@ const styles = StyleSheet.create({
 
   input: {
     // height: 40,
-    borderWidth: 1,
-    borderColor: '#000',
-    marginBottom: 3,
+
+    // borderColor: '#000',
+    marginBottom: 6,
     borderRadius: 5,
     paddingHorizontal: 5,
     backgroundColor: 'white',

@@ -13,6 +13,7 @@ import ForgotPassword from './pages/ForgetScreen';
 import {AppProvider} from './hooks/useAppState';
 import FormWizardScreen from './pages/formWizard/FormWizard';
 import ResidentialWizard from './pages/formWizard/ResidentialWizard';
+ 
 const App = () => {
   const Stack = createNativeStackNavigator();
 

@@ -42,7 +42,19 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
 
   const {register, setError, handleSubmit, formState, setValue, reset, watch} =
     useForm({
-      defaultValues: stepValues,
+      defaultValues: mergeObjs(stepValues, {
+        f_24H_ops: 'yes',
+        f_beer_cave: 'yes',
+        numCarWash: 0,
+        retailTenantType: 'None',
+        retailTenantSize: 0,
+        qsrBrand: 'None',
+        qsrSize: 0,
+        storeType: 'None',
+        storeSize: 0,
+        f_freezer_door: 0,
+        f_cooler_door: 0,
+      }),
       mode: 'onSubmit',
       resolver: yupResolver(validationSchema),
     });
@@ -81,7 +93,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
   register('gasBrandConsideration');
   register('numMPD');
   register('numAutoDieselHose');
-  
+
   return (
     <View style={styles.container}>
       <ScrollView>

@@ -14,7 +14,7 @@ const Neighbourhood = ({ currentStep, setCurrentStep }) => {
   };
 
   const [checked, setChecked] = useState(false);
-  console.log("checked", checked);
+  
   return (
     <View style={styles.container}>
       <View style={styles.container}>
