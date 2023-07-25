@@ -79,7 +79,7 @@ const Login = () => {
         })
         .catch(function (error) {
           // handle error
-          alert("You credentials is Incorrect");
+          alert(error?.message);
           setIsLoading(false);
         });
     } catch (error) {

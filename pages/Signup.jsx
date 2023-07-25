@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -6,34 +6,77 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import FocusedStatusBar from "../components/FocusedStatusBar";
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import FocusedStatusBar from '../components/FocusedStatusBar';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+
+import * as Yup from 'yup';
+import Loader from './formWizard/Loader';
+import axios from 'axios';
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string().required('Required'),
+  password: Yup.string().required('Required'),
+  first_name: Yup.string().required('Required'),
+  last_name: Yup.string().required('Required'),
+});
 
 const Signup = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
 
-  const handleSignup = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {register, setError, handleSubmit, formState, setValue, reset, watch} =
+    useForm({
+      mode: 'onSubmit',
+      resolver: yupResolver(validationSchema),
+    });
+  const {errors} = formState;
+
+  const handleSignup = data => {
     // Perform signup logic here
-    console.log("Sign Up button pressed");
+    console.log('dataa', data);
+
+    try {
+      setIsLoading(true);
+
+      axios
+        .post('https://tezintel.com/api/accounts/signup/', data)
+        .then(function (response) {
+          // handle success
+
+          alert('Please check your email for verfication');
+
+          navigation.navigate('Login');
+          setIsLoading(false);
+        })
+        .catch(function (error) {
+          // handle error
+          alert(error?.message);
+          setIsLoading(false);
+        });
+    } catch (error) {
+      // Handle error here
+      console.error(error);
+      setIsLoading(false);
+    }
   };
 
   const navigateToLogin = () => {
-    navigation.navigate("Login"); // Replace 'Login' with your login screen's name or route
+    navigation.navigate('Login'); // Replace 'Login' with your login screen's name or route
   };
 
   return (
     <View style={styles.container}>
       <FocusedStatusBar />
+      {isLoading && <Loader />}
 
       <View style={styles.loginInfoContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../assets/images/logo/logo2.png")}
+            source={require('../assets/images/logo/logo2.png')}
             style={styles.logo}
           />
         </View>
@@ -47,35 +90,62 @@ const Signup = () => {
         <TextInput
           style={styles.input}
           placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
+          name="email"
           autoCapitalize="none"
           keyboardType="email-address"
+          onChangeText={value => {
+            setValue('email', value);
+          }}
+          value={watch('email')}
         />
+        {errors?.email && (
+          <Text style={styles.error}>{errors?.email?.message}</Text>
+        )}
 
         <TextInput
           style={styles.input}
           placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
+          name="password"
           secureTextEntry
+          onChangeText={value => {
+            setValue('password', value);
+          }}
+          value={watch('password')}
         />
-
+        {errors?.password && (
+          <Text style={styles.error}>{errors?.password?.message}</Text>
+        )}
         <TextInput
           style={styles.input}
           placeholder="First Name"
-          value={firstName}
-          onChangeText={setFirstName}
+          name="text"
+          onChangeText={value => {
+            setValue('first_name', value);
+          }}
+          value={watch('first_name')}
         />
+
+        {errors?.first_name && (
+          <Text style={styles.error}>{errors?.first_name?.message}</Text>
+        )}
 
         <TextInput
           style={styles.input}
           placeholder="Last Name"
-          value={lastName}
-          onChangeText={setLastName}
+          name="last"
+          onChangeText={value => {
+            setValue('last_name', value);
+          }}
+          value={watch('last_name')}
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+        {errors?.last_name && (
+          <Text style={styles.error}>{errors?.last_name?.message}</Text>
+        )}
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSubmit(handleSignup)}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
 
@@ -96,25 +166,25 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 0,
-    color: "white",
-    textAlign: "center",
+    color: 'white',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
     // marginBottom: 20,
-    textAlign: "center",
+    textAlign: 'center',
     padding: 20,
     marginLeft: 15,
     marginRight: 15,
-    color: "white",
+    color: 'white',
   },
   input: {
-    width: "100%",
+    width: '100%',
     height: 40,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 5,
     marginBottom: 10,
     paddingLeft: 10,
@@ -122,40 +192,40 @@ const styles = StyleSheet.create({
   loginInfoContainer: {
     // height:"50%"
     height: 330,
-    backgroundColor: "#1c49bc",
+    backgroundColor: '#1c49bc',
   },
   button: {
-    width: "100%",
+    width: '100%',
     height: 40,
-    backgroundColor: "#0080ff",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#0080ff',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 5,
   },
   buttonText: {
-    color: "white",
+    color: 'white',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   loginText: {
     marginTop: 10,
-    color: "#0080ff",
+    color: '#0080ff',
     fontSize: 16,
-    fontWeight: "bold",
-    textDecorationLine: "underline",
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
   },
   formContainer: {
     padding: 50,
     flex: 1,
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   logoContainer: {
-    alignItems: "center",
-    display: "flex",
+    alignItems: 'center',
+    display: 'flex',
     marginBottom: 20,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 85,
   },
 });
