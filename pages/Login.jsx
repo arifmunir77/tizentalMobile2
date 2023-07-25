@@ -20,7 +20,7 @@ import Loader from './formWizard/Loader';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required('Required'),
-  password: Yup.number().required('Required'),
+  password: Yup.string().required('Required'),
 });
 
 const Login = () => {
@@ -79,7 +79,7 @@ const Login = () => {
         })
         .catch(function (error) {
           // handle error
-          alert(error.message);
+          alert("You credentials is Incorrect");
           setIsLoading(false);
         });
     } catch (error) {
