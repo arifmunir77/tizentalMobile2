@@ -1,24 +1,53 @@
-import { View, Text, StyleSheet, Image ,ScrollView } from "react-native";
-import React from "react";
-import StepsComponent from "../../components/StepsComponent";
-import RadioButton from "../../components/RadioButton";
-import { useState } from "react";
- 
+import {View, Text, StyleSheet, Image, ScrollView} from 'react-native';
+import React, {useEffect} from 'react';
+import StepsComponent from '../../components/StepsComponent';
+import RadioButton from '../../components/RadioButton';
+import {useState} from 'react';
+
 import CheckBox from '@react-native-community/checkbox';
+import {useForm} from 'react-hook-form';
+import {mergeObjs} from '../../utils/ObjectUtils';
+import {useAppState} from '../../hooks/useAppState';
 
+const BuildingDetails = ({currentStep, setCurrentStep}) => {
+  const [stepValues, setStepValues] = useAppState();
 
-const BuildingDetails = ({ currentStep, setCurrentStep }) => {
-  const handlePrevStep = (unit) => {
+  const [otherFeatures, setOtherFeatures] = useState([]);
+
+  const handlePrevStep = unit => {
     setCurrentStep(currentStep - 1);
   };
 
-  const handleNextStep = (unit) => {
-    setCurrentStep(currentStep + 1);
+  const handleNextStep = () => {
+    handleSubmit(submit)();
   };
 
-  const [retailUnit, setRetailUnit] = useState("");
+  const submit = data => {
+    setStepValues({...stepValues, ...data, otherFeatures: otherFeatures});
+    setCurrentStep(currentStep + 1);
+  };
+ 
 
-  const [checked, setChecked] = useState(false);
+  const {register, setError, handleSubmit, formState, watch, reset, setValue} =
+    useForm({
+      defaultValues: mergeObjs(stepValues, {
+        building_quality: 'low',
+        roof_type: 'gableRoof',
+        kitchens_quality: 'kitAverage',
+        bathroom_quality: 'bathOlder',
+        airconditioning_type: 'windowsUnits',
+        exterior_type: 'brickExterior',
+        parking_type: 'noParking',
+      }),
+      mode: 'onSubmit',
+    });
+  const {errors} = formState;
+
+  useEffect(() => {
+    if (stepValues?.otherFeatures) {
+      setOtherFeatures(stepValues?.otherFeatures);
+    }
+  }, [stepValues]);
 
   return (
     <View style={styles.container}>
@@ -26,13 +55,12 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
         <View style={styles.container}>
           <Text style={styles.title}>Building Details</Text>
           <Text style={styles.description}>
-            {" "}
             Check off any that apply about the building
           </Text>
 
           <View style={styles.legendContainer}>
             <Image
-              source={require("../../assets/images/carbon_building.png")}
+              source={require('../../assets/images/carbon_building.png')}
               style={styles.legendImage}
             />
             <Text style={styles.label2}>Building Quality</Text>
@@ -42,26 +70,28 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
               <RadioButton
                 label="Low"
                 value="low"
-                checked={retailUnit === "low"}
-                onChange={(value) => {
-                  // console.log("value", value);
-                  setRetailUnit(value);
+                checked={watch('building_quality') == 'low'}
+                name={'building_quality'}
+                onChange={val => {
+                  setValue('building_quality', val);
                 }}
               />
               <RadioButton
                 label="Average"
                 value="average"
-                checked={retailUnit === "average"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                checked={watch('building_quality') == 'average'}
+                name={'building_quality'}
+                onChange={val => {
+                  setValue('building_quality', val);
                 }}
               />
               <RadioButton
                 label="High"
                 value="high"
-                checked={retailUnit === "high"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                checked={watch('building_quality') == 'high'}
+                name={'building_quality'}
+                onChange={val => {
+                  setValue('building_quality', val);
                 }}
               />
             </View>
@@ -69,7 +99,7 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
 
           <View style={styles.legendContainer}>
             <Image
-              source={require("../../assets/images/roof.png")}
+              source={require('../../assets/images/roof.png')}
               style={styles.legendImage}
             />
             <Text style={styles.label2}>Roof</Text>
@@ -78,19 +108,20 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
             <View style={styles.radioContainer}>
               <RadioButton
                 label="Gable Roof"
-                value="gable Roof"
-                checked={retailUnit === "gable Roof"}
-                onChange={(value) => {
-                  // console.log("value", value);
-                  setRetailUnit(value);
+                value="gableRoof"
+                checked={watch('roof_type') == 'gableRoof'}
+                name={'roof_type'}
+                onChange={val => {
+                  setValue('roof_type', val);
                 }}
               />
               <RadioButton
                 label="Flat Roof"
-                value="flat roof"
-                checked={retailUnit === "flat roof"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="flatRoof"
+                checked={watch('roof_type') == 'flatRoof'}
+                name={'roof_type'}
+                onChange={val => {
+                  setValue('roof_type', val);
                 }}
               />
             </View>
@@ -100,7 +131,7 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
 
           <View style={styles.legendContainer}>
             <Image
-              source={require("../../assets/images/kitchen.png")}
+              source={require('../../assets/images/kitchen.png')}
               style={styles.legendImage}
             />
             <Text style={styles.label2}>Kitchen</Text>
@@ -109,27 +140,29 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
             <View style={styles.radioContainer}>
               <RadioButton
                 label="Older"
-                value="older"
-                checked={retailUnit === "older"}
-                onChange={(value) => {
-                  // console.log("value", value);
-                  setRetailUnit(value);
+                value="kitOlder"
+                checked={watch('kitchens_quality') == 'kitOlder'}
+                name={'kitchens_quality'}
+                onChange={val => {
+                  setValue('kitchens_quality', val);
                 }}
               />
               <RadioButton
                 label="Average"
-                value="average"
-                checked={retailUnit === "average"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="kitAverage"
+                checked={watch('kitchens_quality') == 'kitAverage'}
+                name={'kitchens_quality'}
+                onChange={val => {
+                  setValue('kitchens_quality', val);
                 }}
               />
               <RadioButton
                 label="High End"
-                value="high end"
-                checked={retailUnit === "high end"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="kitHighEnd"
+                checked={watch('kitchens_quality') == 'kitHighEnd'}
+                name={'kitchens_quality'}
+                onChange={val => {
+                  setValue('kitchens_quality', val);
                 }}
               />
             </View>
@@ -141,7 +174,7 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
 
           <View style={styles.legendContainer}>
             <Image
-              source={require("../../assets/images/bathroom.png")}
+              source={require('../../assets/images/bathroom.png')}
               style={styles.legendImage}
             />
             <Text style={styles.label2}>Bathrooms</Text>
@@ -150,27 +183,29 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
             <View style={styles.radioContainer}>
               <RadioButton
                 label="Older"
-                value="older"
-                checked={retailUnit === "older"}
-                onChange={(value) => {
-                  // console.log("value", value);
-                  setRetailUnit(value);
+                value="bathOlder"
+                checked={watch('bathroom_quality') == 'bathOlder'}
+                name={'bathroom_quality'}
+                onChange={val => {
+                  setValue('bathroom_quality', val);
                 }}
               />
               <RadioButton
                 label="Average"
-                value="average"
-                checked={retailUnit === "average"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="bathAverage"
+                checked={watch('bathroom_quality') == 'bathAverage'}
+                name={'bathroom_quality'}
+                onChange={val => {
+                  setValue('bathroom_quality', val);
                 }}
               />
               <RadioButton
                 label="High End"
-                value="high end"
-                checked={retailUnit === "high end"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="bathHighEnd"
+                checked={watch('bathroom_quality') == 'bathHighEnd'}
+                name={'bathroom_quality'}
+                onChange={val => {
+                  setValue('bathroom_quality', val);
                 }}
               />
             </View>
@@ -182,7 +217,7 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
 
           <View style={styles.legendContainer}>
             <Image
-              source={require("../../assets/images/air-conditioning.png")}
+              source={require('../../assets/images/air-conditioning.png')}
               style={styles.legendImage}
             />
             <Text style={styles.label2}> Air Conditoning</Text>
@@ -191,35 +226,38 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
             <View style={styles.radioAirContainer}>
               <RadioButton
                 label="Non Air Conditioning"
-                value="Non Air Conditioning"
-                checked={retailUnit === "Non Air Conditioning"}
-                onChange={(value) => {
-                  // console.log("value", value);
-                  setRetailUnit(value);
+                value="NoAirConditioning"
+                checked={watch('airconditioning_type') == 'NoAirConditioning'}
+                name={'airconditioning_type'}
+                onChange={val => {
+                  setValue('airconditioning_type', val);
                 }}
               />
               <RadioButton
                 label="Window Unts"
-                value="Window Unts"
-                checked={retailUnit === "Window Unts"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="windowsUnits"
+                checked={watch('airconditioning_type') == 'windowsUnits'}
+                name={'airconditioning_type'}
+                onChange={val => {
+                  setValue('airconditioning_type', val);
                 }}
               />
               <RadioButton
                 label="Through-wall condtitioners"
-                value="Through-wall condtitioners"
-                checked={retailUnit === "Through-wall condtitioners"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="throughWall"
+                checked={watch('airconditioning_type') == 'throughWall'}
+                name={'airconditioning_type'}
+                onChange={val => {
+                  setValue('airconditioning_type', val);
                 }}
               />
               <RadioButton
                 label="Central air condtitioners"
-                value="Central air condtitioners"
-                checked={retailUnit === "Central air condtitioners"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="centralAC"
+                checked={watch('airconditioning_type') == 'centralAC'}
+                name={'airconditioning_type'}
+                onChange={val => {
+                  setValue('airconditioning_type', val);
                 }}
               />
             </View>
@@ -231,7 +269,7 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
 
           <View style={styles.legendContainer}>
             <Image
-              source={require("../../assets/images/exterior.png")}
+              source={require('../../assets/images/exterior.png')}
               style={styles.legendImage}
             />
             <Text style={styles.label2}> Exterior</Text>
@@ -240,35 +278,38 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
             <View style={styles.radioAirContainer}>
               <RadioButton
                 label="Brick Exterior"
-                value="Brick Exterior"
-                checked={retailUnit === "Brick Exterior"}
-                onChange={(value) => {
-                  // console.log("value", value);
-                  setRetailUnit(value);
+                value="brickExterior"
+                checked={watch('exterior_type') == 'brickExterior'}
+                name={'exterior_type'}
+                onChange={val => {
+                  setValue('exterior_type', val);
                 }}
               />
               <RadioButton
                 label="Wood Exterior"
-                value="Wood Exterior"
-                checked={retailUnit === "Wood Exterior"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="woodExterior"
+                checked={watch('exterior_type') == 'woodExterior'}
+                name={'exterior_type'}
+                onChange={val => {
+                  setValue('exterior_type', val);
                 }}
               />
               <RadioButton
                 label="Vinyl or aluminum exterior"
-                value="Vinyl or aluminum exterior"
-                checked={retailUnit === "Vinyl or aluminum exterior"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="aluminumExterior"
+                checked={watch('exterior_type') == 'aluminumExterior'}
+                name={'exterior_type'}
+                onChange={val => {
+                  setValue('exterior_type', val);
                 }}
               />
               <RadioButton
                 label="Asbestos shingle exterior"
-                value="Asbestos shingle exterior"
-                checked={retailUnit === "Asbestos shingle exterior"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="shingleExterior"
+                checked={watch('exterior_type') == 'shingleExterior'}
+                name={'exterior_type'}
+                onChange={val => {
+                  setValue('exterior_type', val);
                 }}
               />
             </View>
@@ -280,7 +321,7 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
 
           <View style={styles.legendContainer}>
             <Image
-              source={require("../../assets/images/parking.png")}
+              source={require('../../assets/images/parking.png')}
               style={styles.legendImage}
             />
             <Text style={styles.label2}> Parking</Text>
@@ -289,52 +330,73 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
             <View style={styles.radioAirContainer}>
               <RadioButton
                 label="No parking on-site"
-                value="No parking on-site"
-                checked={retailUnit === "No parking on-site"}
-                onChange={(value) => {
-                  // console.log("value", value);
-                  setRetailUnit(value);
+                value="noParking"
+                checked={watch('parking_type') == 'noParking'}
+                name={'parking_type'}
+                onChange={val => {
+                  setValue('parking_type', val);
                 }}
               />
               <RadioButton
                 label="Limited parking on-site"
-                value="Limited parking on-site"
-                checked={retailUnit === "Limited parking on-site"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="limitedParking"
+                checked={watch('parking_type') == 'limitedParking'}
+                name={'parking_type'}
+                onChange={val => {
+                  setValue('parking_type', val);
                 }}
               />
               <RadioButton
                 label="About one space per unit on site"
-                value="About one space per unit on site"
-                checked={retailUnit === "About one space per unit on site"}
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="spacePerUnit"
+                checked={watch('parking_type') == 'spacePerUnit'}
+                name={'parking_type'}
+                onChange={val => {
+                  setValue('parking_type', val);
                 }}
               />
               <RadioButton
                 label="More than one space per bedroom on site"
-                value="More than one space per bedroom on site"
-                checked={
-                  retailUnit === "More than one space per bedroom on site"
-                }
-                onChange={(value) => {
-                  setRetailUnit(value);
+                value="spacePerBedroom"
+                checked={watch('parking_type') == 'spacePerBedroom'}
+                name={'parking_type'}
+                onChange={val => {
+                  setValue('parking_type', val);
+                }}
+              />
+
+              <RadioButton
+                label="Overnight street parking is available"
+                value="overnight_parking_available"
+                checked={watch('parking_type') == 'overnight_parking_available'}
+                name={'parking_type'}
+                onChange={val => {
+                  setValue('parking_type', val);
                 }}
               />
             </View>
           </View>
 
-          <View style={styles.checkboxContainer}>
+          {/* <View style={styles.checkboxContainer}>
             <CheckBox
               style={styles.checkbox}
-              value={checked}
-              onValueChange={setChecked}
+              onValueChange={checked => {
+                if (checked) {
+                  setValue('moreSpacePerBedroom');
+                } else {
+                  set_neighborhood_conditions(
+                    neighborhood_conditions.filter(
+                      item => item !== 'quietNeighborhood',
+                    ),
+                  );
+                }
+              }}
+              value={watch()}
             />
             <Text style={styles.checkboxLabel}>
               Overnight street parking is available
             </Text>
-          </View>
+          </View> */}
 
           {/*  Parking */}
 
@@ -342,7 +404,7 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
 
           <View style={styles.legendContainer}>
             <Image
-              source={require("../../assets/images/carbon_building.png")}
+              source={require('../../assets/images/carbon_building.png')}
               style={styles.legendImage}
             />
             <Text style={styles.label2}> Other Features</Text>
@@ -351,8 +413,16 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
             <View style={styles.checkboxContainer}>
               <CheckBox
                 style={styles.checkbox}
-                value={checked}
-                onValueChange={setChecked}
+                onValueChange={checked => {
+                  if (checked) {
+                    setOtherFeatures([...otherFeatures, 'elevators']);
+                  } else {
+                    setOtherFeatures(
+                      otherFeatures.filter(item => item !== 'elevators'),
+                    );
+                  }
+                }}
+                value={otherFeatures?.includes('elevators')}
               />
               <Text style={styles.checkboxLabel}>Elevator or elevators</Text>
             </View>
@@ -360,40 +430,115 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
             <View style={styles.checkboxContainer}>
               <CheckBox
                 style={styles.checkbox}
-                value={checked}
-                onValueChange={setChecked}
+                onValueChange={checked => {
+                  if (checked) {
+                    setOtherFeatures([...otherFeatures, 'indoorPool']);
+                  } else {
+                    setOtherFeatures(
+                      otherFeatures.filter(item => item !== 'indoorPool'),
+                    );
+                  }
+                }}
+                value={otherFeatures?.includes('indoorPool')}
               />
               <Text style={styles.checkboxLabel}>Indoor pool</Text>
+            </View>
+
+            <View style={styles.checkboxContainer}>
+              <CheckBox
+                style={styles.checkbox}
+                onValueChange={checked => {
+                  if (checked) {
+                    setOtherFeatures([...otherFeatures, 'outdoorPool']);
+                  } else {
+                    setOtherFeatures(
+                      otherFeatures.filter(item => item !== 'outdoorPool'),
+                    );
+                  }
+                }}
+                value={otherFeatures?.includes('outdoorPool')}
+              />
+              <Text style={styles.checkboxLabel}>Outdoor pool</Text>
             </View>
             <View style={styles.checkboxContainer}>
               <CheckBox
                 style={styles.checkbox}
-                value={checked}
-                onValueChange={setChecked}
+                onValueChange={checked => {
+                  if (checked) {
+                    setOtherFeatures([...otherFeatures, 'tennisCourt']);
+                  } else {
+                    setOtherFeatures(
+                      otherFeatures.filter(item => item !== 'tennisCourt'),
+                    );
+                  }
+                }}
+                value={otherFeatures?.includes('tennisCourt')}
               />
               <Text style={styles.checkboxLabel}>Tennis court or courts</Text>
             </View>
             <View style={styles.checkboxContainer}>
               <CheckBox
                 style={styles.checkbox}
-                value={checked}
-                onValueChange={setChecked}
+                onValueChange={checked => {
+                  if (checked) {
+                    setOtherFeatures([...otherFeatures, 'roofDeck']);
+                  } else {
+                    setOtherFeatures(
+                      otherFeatures.filter(item => item !== 'roofDeck'),
+                    );
+                  }
+                }}
+                value={otherFeatures?.includes('roofDeck')}
               />
               <Text style={styles.checkboxLabel}>Roof deck</Text>
             </View>
             <View style={styles.checkboxContainer}>
               <CheckBox
                 style={styles.checkbox}
-                value={checked}
-                onValueChange={setChecked}
+                onValueChange={checked => {
+                  if (checked) {
+                    setOtherFeatures([...otherFeatures, 'laundryRoom']);
+                  } else {
+                    setOtherFeatures(
+                      otherFeatures.filter(item => item !== 'laundryRoom'),
+                    );
+                  }
+                }}
+                value={otherFeatures?.includes('laundryRoom')}
+              />
+              <Text style={styles.checkboxLabel}>Laundry room</Text>
+            </View>
+            <View style={styles.checkboxContainer}>
+              <CheckBox
+                style={styles.checkbox}
+                onValueChange={checked => {
+                  if (checked) {
+                    setOtherFeatures([...otherFeatures, 'balconies']);
+                  } else {
+                    setOtherFeatures(
+                      otherFeatures.filter(item => item !== 'balconies'),
+                    );
+                  }
+                }}
+                value={otherFeatures?.includes('balconies')}
               />
               <Text style={styles.checkboxLabel}>Balconies and patios</Text>
             </View>
             <View style={styles.checkboxContainer}>
               <CheckBox
                 style={styles.checkbox}
-                value={checked}
-                onValueChange={setChecked}
+                onValueChange={checked => {
+                  if (checked) {
+                    setOtherFeatures([...otherFeatures, 'laundryFacilities']);
+                  } else {
+                    setOtherFeatures(
+                      otherFeatures.filter(
+                        item => item !== 'laundryFacilities',
+                      ),
+                    );
+                  }
+                }}
+                value={otherFeatures?.includes('laundryFacilities')}
               />
               <Text style={styles.checkboxLabel}>
                 In-unit laundry facilities
@@ -404,30 +549,18 @@ const BuildingDetails = ({ currentStep, setCurrentStep }) => {
           <View style={styles.checkboxContainer}>
             <CheckBox
               style={styles.checkbox}
-              value={checked}
-              onValueChange={setChecked}
-            />
-            <Text style={styles.checkboxLabel}>
-              Overnight street parking is available
-            </Text>
-          </View>
-
-          <View style={styles.checkboxContainer}>
-            <CheckBox
-              style={styles.checkbox}
-              value={checked}
-              onValueChange={setChecked}
+              onValueChange={checked => {
+                if (checked) {
+                  setOtherFeatures([...otherFeatures, 'storageCubicles']);
+                } else {
+                  setOtherFeatures(
+                    otherFeatures.filter(item => item !== 'storageCubicles'),
+                  );
+                }
+              }}
+              value={otherFeatures?.includes('storageCubicles')}
             />
             <Text style={styles.checkboxLabel}>Storage cubicles</Text>
-          </View>
-
-          <View style={styles.checkboxContainer}>
-            <CheckBox
-              style={styles.checkbox}
-              value={checked}
-              onValueChange={setChecked}
-            />
-            <Text style={styles.checkboxLabel}>Laundry room</Text>
           </View>
 
           {/*  Features */}
@@ -461,30 +594,30 @@ const styles = StyleSheet.create({
     // fontWeight: 600,
   },
   legendContainer: {
-    alignItems: "center",
-    display: "flex",
+    alignItems: 'center',
+    display: 'flex',
     marginBottom: 20,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
     marginTop: 25,
   },
   label2: {
     fontSize: 16,
     // fontWeight: "bold",
-     textAlign: "center",
+    textAlign: 'center',
   },
   legendImage: {
     // marginTop: 20,
   },
   radioContainer: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
     gap: 15,
   },
   checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
   },
   checkboxLabel: {

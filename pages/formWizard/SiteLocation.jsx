@@ -6,9 +6,11 @@ import {
   Button,
   Text,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import Geocoding, {geocodeByAddress} from 'react-native-geocoding';
+import Geocoding from 'react-native-geocoding';
 import {TouchableOpacity} from 'react-native';
 import {useAppState} from '../../hooks/useAppState';
 
@@ -96,6 +98,21 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
     handleSubmit(submit)();
   };
 
+  const convertToCompanyAddress = async (latitude, longitude) => {
+    try {
+      const response = await Geocoding.from(latitude, longitude);
+      const {results} = response;
+      const address = results[1].formatted_address;
+      setValue('compAddress', address);
+      setValue('lat', latitude);
+      setValue('lon', longitude);
+
+      locationRef?.current?.setAddressText(address);
+    } catch (error) {
+      console.error('Error converting coordinates to address:', error);
+    }
+  };
+
   useEffect(() => {
     if (stepValues) {
       let address = stepValues?.compAddress;
@@ -119,8 +136,8 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
         setRegion({
           latitude: lat,
           longitude: lon,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.0121,
+          latitudeDelta: 0.000315,
+          longitudeDelta: 0.0005121,
         });
       }
     }
@@ -143,49 +160,57 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
         )}
       </View>
 
-      <View style={{zIndex: 1, flex: 1, height: '100%'}}>
-        <GooglePlacesAutocomplete
-          placeholder="Search Place"
-          debounce={400}
-          query={{
-            key: 'AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s',
-            language: 'en',
-          }}
-          fetchDetails={true}
-          ref={locationRef}
-          listViewDisplayed={true}
-          onPress={(item, details = null) => {
-            moveToLocation(
-              details?.geometry?.location?.lat,
-              details?.geometry?.location?.lng,
-            );
-            console.log('details?.geometry?.location',details?.geometry?.location);
+      <View style={{zIndex:5, flex: 1, height: '100%'}}>
+        
+          <GooglePlacesAutocomplete
+            placeholder="Search Place"
+            debounce={400}
+            query={{
+              key: 'AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s',
+              language: 'en',
+            }}
+            fetchDetails={true}
+            ref={locationRef}
+            listViewDisplayed={true}
+            onPress={(item, details = null) => {
+              moveToLocation(
+                details?.geometry?.location?.lat,
+                details?.geometry?.location?.lng,
+              );
 
-            setValue('lat', details?.geometry?.location?.lat);
-            setValue('lon', details?.geometry?.location?.lng);
-            setValue(
-              'compAddress',
-              item?.structured_formatting?.main_text +
-                ' ' +
-                item?.structured_formatting?.secondary_text,
-            );
-          }}
-          onFail={error => console.error(error)}
-          styles={{height: 400}}
-        />
+              setValue('lat', details?.geometry?.location?.lat);
+              setValue('lon', details?.geometry?.location?.lng);
+              setValue(
+                'compAddress',
+                item?.structured_formatting?.main_text +
+                  ' ' +
+                  item?.structured_formatting?.secondary_text,
+              );
+            }}
+            onFail={error => console.error(error)}
+            styles={{height: 400}}
+          />
+        
       </View>
 
       <MapView
         style={styles.map}
-        zoomEnabled={true}
+        // zoomEnabled={true}
         region={region}
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
         zoomControlEnabled={true}
-        showsUserLocation={true}
-        followsUserLocation={true}
+        showsUserLocation={false}
+        followsUserLocation={false}
         moveOnMarkerPress={true}
-        showsMyLocationButton={true}>
+        showsMyLocationButton={false}
+        onPress={event => {
+          console.log('pressed');
+          const {latitude, longitude} = event.nativeEvent.coordinate;
+          setSelectedLocation({latitude, longitude});
+
+          convertToCompanyAddress(latitude, longitude);
+        }}>
         {selectedLocation && <Marker coordinate={selectedLocation} />}
       </MapView>
 
@@ -223,7 +248,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // marginBottom: 50,
     ...StyleSheet.absoluteFill,
-    height: 360,
+    height: 300,
     marginTop: 150,
 
     // zIndex: 0,

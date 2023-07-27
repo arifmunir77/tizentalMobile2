@@ -41,10 +41,19 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
     });
   const {errors} = formState;
 
+  console.log('stee', stepValues);
+
   const submit = data => {
     setStepValues({...stepValues, ...data});
     setCurrentStep(currentStep + 1);
   };
+
+  // useEffect(() => {
+  //   if (stepValues) {
+  //     console.log("ssss",stepValues?.totalAreaSqFt)
+  //     setValue('totalAreaSqFt',stepValues?.totalAreaSqFt.toString());
+  //   }
+  // }, [stepValues]);
 
   return (
     <View style={styles.container}>
@@ -55,9 +64,9 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
           <View style={styles.fieldContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Site Area in sq. ft"
-              value={watch('totalAreaSqFt')}
               name="totalAreaSqFt"
+              placeholder="Site Area in sq. ft"
+              value={watch('totalAreaSqFt')?.toString()}
               onChangeText={value => {
                 setValue('totalAreaSqFt', value);
               }}
@@ -75,11 +84,11 @@ const SiteDetails = ({currentStep, setCurrentStep}) => {
             <TextInput
               style={styles.input}
               name={'totalCurbCuts'}
-              value={watch('totalCurbCuts')}
+              value={watch('totalCurbCuts')?.toString()}
               onChangeText={value => {
                 setValue('totalCurbCuts', value);
               }}
-              placeholder="totalCurbCuts"
+              placeholder="Hom many Curb Cuts"
             />
             {errors?.totalAreaSqFt && (
               <Text style={styles.errorText}>

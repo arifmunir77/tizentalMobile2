@@ -37,7 +37,7 @@ const EvaluationScreen = () => {
           style={styles.commercialButton}
           onPress={() => {
             handleResidentPress('Form-Wizard');
-            setStepValues({...stepValues, ...{facType: 'commercial'}});
+            setStepValues({facType: 'commercial'});
           }}>
           <Image
             source={require('../assets/images/commercial.png')}
@@ -51,7 +51,7 @@ const EvaluationScreen = () => {
           style={styles.residentButton}
           onPress={() => {
             handleResidentPress('Residential-Wizard');
-            setStepValues({...stepValues, ...{facType: 'residential'}});
+            setStepValues({facType: 'residential'});
           }}>
           <Image
             source={require('../assets/images/apartment.png')}

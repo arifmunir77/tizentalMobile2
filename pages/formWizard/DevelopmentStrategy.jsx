@@ -100,15 +100,19 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
         <View style={styles.container}>
           <Text style={styles.title}>Development Strategy</Text>
           <View>
-            <Text>Please select proposed development strategy</Text>
+            <Text style={{marginBottom:10}}>Please select proposed development strategy</Text>
 
             <SelectList
               setSelected={val => selectedViewProjectTemplate(val)}
               data={data}
               save="value"
+              boxStyles={{
+                borderRadius: 0,
+                borderColor: '#ccc',
+              }}
             />
 
-            <Text>Please make your selection</Text>
+            <Text style={{marginTop:10,marginBottom:10}}>Please make your selection</Text>
             <TextInput
               style={styles.input}
               placeholder="Gas Brand"
@@ -116,7 +120,8 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('gasBrandConsideration', value);
               }}
-              value={watch('gasBrandConsideration')}
+              keyboardType="numeric"
+              value={watch('gasBrandConsideration')?.toString()}
               {...register('gasBrandConsideration')}
             />
             {errors?.gasBrandConsideration && (
@@ -133,7 +138,8 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('numMPD', value);
               }}
-              value={watch('numMPD')}
+              keyboardType="numeric"
+              value={watch('numMPD')?.toString()}
             />
             {errors?.numMPD && (
               <Text style={styles.error}>{errors?.numMPD?.message}</Text>
@@ -146,7 +152,8 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('numAutoDieselHose', value);
               }}
-              value={watch('numAutoDieselHose')}
+              keyboardType="numeric"
+              value={watch('numAutoDieselHose')?.toString()}
             />
             {errors?.numAutoDieselHose && (
               <Text style={styles.error}>
@@ -160,7 +167,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('numCarWash', value);
               }}
-              value={watch('numCarWash')}
+              value={watch('numCarWash')?.toString()}
               keyboardType="numeric"
               placeholder="# of Car Wash"
             />
@@ -168,7 +175,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               <Text style={styles.error}>{errors.numCarWash?.message}</Text>
             )}
 
-            <Text>Attached QSR (Quick Service Restaurant)</Text>
+            <Text style={{marginTop:10,marginBottom:10}}>Attached QSR (Quick Service Restaurant)</Text>
             <TextInput
               style={styles.input}
               placeholder="Fast Food Brand"
@@ -176,7 +183,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('qsrBrand', value);
               }}
-              value={watch('qsrBrand')}
+              value={watch('qsrBrand')?.toString()}
             />
 
             <TextInput
@@ -187,17 +194,17 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('qsrSize', value);
               }}
-              value={watch('qsrSize')}
+              value={watch('qsrSize')?.toString()}
             />
 
-            <Text>Attached Retail Tenant</Text>
+            <Text style={{marginTop:10,marginBottom:10}}>Attached Retail Tenant</Text>
             <TextInput
               style={styles.input}
               name={'retailTenantType'}
               onChangeText={value => {
                 setValue('retailTenantType', value);
               }}
-              value={watch('retailTenantType')}
+              value={watch('retailTenantType')?.toString()}
               placeholder="Type"
             />
 
@@ -209,10 +216,10 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('retailTenantSize', value);
               }}
-              value={watch('retailTenantSize')}
+              value={watch('retailTenantSize')?.toString()}
             />
 
-            <Text>Store Details</Text>
+            <Text style={{marginTop:10,marginBottom:10}}>Store Details</Text>
 
             <TextInput
               style={styles.input}
@@ -221,7 +228,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('storeType', value);
               }}
-              value={watch('storeType')}
+              value={watch('storeType')?.toString()}
             />
 
             <TextInput
@@ -232,7 +239,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('storeSize', value);
               }}
-              value={watch('storeSize')}
+              value={watch('storeSize')?.toString()}
             />
 
             <TextInput
@@ -243,7 +250,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('f_freezer_door', value);
               }}
-              value={watch('f_freezer_door')}
+              value={watch('f_freezer_door')?.toString()}
             />
 
             <TextInput
@@ -254,7 +261,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('f_cooler_door', value);
               }}
-              value={watch('f_cooler_door')}
+              value={watch('f_cooler_door')?.toString()}
             />
 
             <Text>Will you have a beer cave ?</Text>
@@ -376,6 +383,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  selectStates: {
+    borderRadius: 10,
   },
 });
 

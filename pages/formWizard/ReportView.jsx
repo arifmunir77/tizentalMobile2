@@ -1,19 +1,22 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, PermissionsAndroid } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  PermissionsAndroid,
+} from 'react-native';
 import Pdf from 'react-native-pdf';
 
-import { useAppState } from '../../hooks/useAppState';
+import {useAppState} from '../../hooks/useAppState';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import Icon from 'react-native-vector-icons/Entypo';
 
-
-
-
 const ReportView = () => {
   const [stepValues, setStepValues] = useAppState();
 
-  let pdfUrl = "https://tezintel.com" + stepValues?.reportPath;
+  let pdfUrl = 'https://tezintel.com' + stepValues?.reportPath;
 
   console.log('pftdd', pdfUrl);
 
@@ -24,7 +27,6 @@ const ReportView = () => {
       </View>
     );
   }
-
 
   const requestStoragePermission = async () => {
     try {
@@ -38,7 +40,7 @@ const ReportView = () => {
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
-        }, 
+        },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         downloadFile();
@@ -51,7 +53,7 @@ const ReportView = () => {
   };
 
   const downloadFile = () => {
-    const { config, fs } = RNFetchBlob;
+    const {config, fs} = RNFetchBlob;
     const date = new Date();
     const fileDir = fs.dirs.DownloadDir;
     config({
@@ -79,21 +81,20 @@ const ReportView = () => {
       });
   };
 
-
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={requestStoragePermission} style={styles.downloadButton}>
-      <Icon  name="dots-three-vertical"  size={30} color="white" />
-
+      <TouchableOpacity
+        onPress={requestStoragePermission}
+        style={styles.downloadButton}>
+        <Icon name="dots-three-vertical" size={30} color="white" />
       </TouchableOpacity>
 
       <Pdf
         trustAllCerts={false}
-        source={{ uri: pdfUrl, cache: true }}
+        source={{uri: pdfUrl, cache: true}}
         style={styles.pdf}
         onError={error => console.log('Error while loading PDF: ', error)}
       />
-
     </View>
   );
 };
@@ -111,16 +112,17 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   downloadButton: {
-    position: 'absolute', // Position the button absolutely
-    top: 0, // Stick to the bottom of the screen
-    right: 0, // Stick to the right side of the screen
+    position: 'absolute', 
+    top: 0,  
+    right: 0,  
     width: 50,
     height: 50,
     borderWidth: 0.5,
-    backgroundColor: 'black',
+    backgroundColor: ' rgba(0,0,0,0.7)',
     justifyContent: 'center',
     alignItems: 'center',
-    color: "#000000", zIndex: 5
+    color: '#000000',
+    zIndex: 5,
   },
   buttonText: {
     color: '#fff',
