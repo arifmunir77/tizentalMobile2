@@ -42,7 +42,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
     {key: '2', value: '7000 - 9000 Sq Ft Site'},
   ];
 
-  const [projectTemplate, setProjectTemplate] = useState(null);
+  const [projectTemplate, setProjectTemplate] = useState([]);
   console.log('projectTemplate', projectTemplate);
 
   const {register, setError, handleSubmit, formState, setValue, reset, watch} =
@@ -134,8 +134,8 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
             <SelectList
               setSelected={val => selectedViewProjectTemplate(val)}
               data={projectTemplate?.map(item => ({
-                value: item.template_name,
-                label: item.template_name,
+                value: item?.template_name,
+                label: item?.template_name,
               }))}
               save="value"
               boxStyles={{
