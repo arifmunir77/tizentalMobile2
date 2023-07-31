@@ -8,6 +8,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Share,
 } from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geocoding from 'react-native-geocoding';
@@ -29,6 +30,9 @@ import {useForm} from 'react-hook-form';
 import {mergeObjs} from '../../utils/ObjectUtils';
 
 import StepsComponent from '../../components/StepsComponent';
+
+ 
+import Icon from 'react-native-vector-icons/Entypo';
 
 const SiteLocation = ({currentStep, setCurrentStep}) => {
   const [stepValues, setStepValues] = useAppState();
@@ -62,6 +66,9 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
 
   const [selectedLocation, setSelectedLocation] = React.useState(null);
 
+  const [isCompAddress, setIsCompAddress] = useState(false);
+  console.log('isCom', isCompAddress);
+
   Geocoding.init('AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s');
 
   const mapRef = useRef();
@@ -74,6 +81,7 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
 
   const moveToLocation = async (latitude, longitude) => {
     try {
+      setIsCompAddress(true);
       mapRef.current.animateToRegion(
         {
           latitude: latitude,
@@ -104,6 +112,7 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
       const {results} = response;
       const address = results[1].formatted_address;
       setValue('compAddress', address);
+
       setValue('lat', latitude);
       setValue('lon', longitude);
 
@@ -143,8 +152,21 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
     }
   }, [stepValues]);
 
+  let locUrl = watch('loc_url');
+
+  const shareLink = () => {
+    Share.share({
+      message: locUrl,
+    })
+      .then(result => console.log(result))
+      .catch(error => console.log(error));
+  };
+
   return (
     <View style={styles.container}>
+      {/* <View>
+        <Button title="Share Link" onPress={shareLink} />
+      </View> */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -160,37 +182,48 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
         )}
       </View>
 
-      <View style={{zIndex:5, flex: 1, height: '100%'}}>
-        
-          <GooglePlacesAutocomplete
-            placeholder="Search Place"
-            debounce={400}
-            query={{
-              key: 'AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s',
-              language: 'en',
-            }}
-            fetchDetails={true}
-            ref={locationRef}
-            listViewDisplayed={true}
-            onPress={(item, details = null) => {
-              moveToLocation(
-                details?.geometry?.location?.lat,
-                details?.geometry?.location?.lng,
-              );
+      <View style={{zIndex: 5, flex: 1, height: '100%', flexDirection: 'row'}}>
+        <GooglePlacesAutocomplete
+          placeholder="Search Place"
+          debounce={400}
+          query={{
+            key: 'AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s',
+            language: 'en',
+          }}
+          fetchDetails={true}
+          ref={locationRef}
+          listViewDisplayed={true}
+          onPress={(item, details = null) => {
+            console.log('locationsss', details?.url);
+            moveToLocation(
+              details?.geometry?.location?.lat,
+              details?.geometry?.location?.lng,
+            );
 
-              setValue('lat', details?.geometry?.location?.lat);
-              setValue('lon', details?.geometry?.location?.lng);
-              setValue(
-                'compAddress',
-                item?.structured_formatting?.main_text +
-                  ' ' +
-                  item?.structured_formatting?.secondary_text,
-              );
-            }}
-            onFail={error => console.error(error)}
-            styles={{height: 400}}
-          />
-        
+            setValue('loc_url', details?.url);
+            setValue('lat', details?.geometry?.location?.lat);
+            setValue('lon', details?.geometry?.location?.lng);
+            setValue(
+              'compAddress',
+              item?.structured_formatting?.main_text +
+                ' ' +
+                item?.structured_formatting?.secondary_text,
+            );
+          }}
+          onFail={error => console.error(error)}
+          // styles={{height: 400}}
+        />
+        <View>
+          <TouchableOpacity
+            style={styles.shareBtn}
+            disabled={!isCompAddress}
+            onPress={shareLink}>
+            <Text style={styles.shareText}> 
+        <Icon name="share" size={30} color="white" />
+            
+             </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <MapView
@@ -214,7 +247,8 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
         {selectedLocation && <Marker coordinate={selectedLocation} />}
       </MapView>
 
-      <View style={{flex: 1, justifyContent: 'flex-end', marginTop: 10}}>
+      <View
+        style={{flex: 1, justifyContent: 'flex-end', marginTop: 10, zIndex: 0}}>
         <StepsComponent
           currentStep={currentStep}
           handlePrevStep={handlePrevStep}
@@ -232,9 +266,6 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    // height: 40,
-
-    // borderColor: '#000',
     marginBottom: 6,
     borderRadius: 5,
     paddingHorizontal: 5,
@@ -246,12 +277,10 @@ const styles = StyleSheet.create({
 
   map: {
     flex: 1,
-    // marginBottom: 50,
+
     ...StyleSheet.absoluteFill,
     height: 300,
     marginTop: 150,
-
-    // zIndex: 0,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -286,6 +315,19 @@ const styles = StyleSheet.create({
   },
   SelectDropdownContainer: {
     marginBottom: 10,
+  },
+  shareBtn: {
+    width: 60,
+    height: 44,
+    backgroundColor: '#0597DF',
+    textAlign: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+  shareText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
   },
 });
 

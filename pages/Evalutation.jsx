@@ -25,7 +25,7 @@ const EvaluationScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../assets/images/form-bg.jpg')} // Replace with your desired image source
+      source={require('../assets/images/form-bg.jpg')} 
       style={styles.backgroundImage}
       resizeMode="cover">
       <View style={styles.container}>

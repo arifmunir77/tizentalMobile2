@@ -14,7 +14,8 @@ import {AppProvider} from './hooks/useAppState';
 import FormWizardScreen from './pages/formWizard/FormWizard';
 import ResidentialWizard from './pages/formWizard/ResidentialWizard';
 import ReportView from './pages/formWizard/ReportView';
-
+import UserAgreement from './pages/UserAgreement';
+ 
 const App = () => {
   const Stack = createNativeStackNavigator();
 
@@ -25,9 +26,11 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName="Login">
+          initialRouteName="Evalutation">
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="User-Agreement" component={UserAgreement} />
+          
           <Stack.Screen name="Evalutation" component={EvaluationScreen} />
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="Forget-Pasword" component={ForgotPassword} />

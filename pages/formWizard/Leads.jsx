@@ -83,7 +83,9 @@ const Leads = ({currentStep, setCurrentStep}) => {
         alert(error.message);
       });
   };
+  let  isSendReport=watch('isSendReport') ;
 
+  console.log("isSen",isSendReport)
   return (
     <View style={styles.container}>
       {isLoading && <Loader />}
@@ -128,6 +130,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
 
               <View style={styles.CheckBoxContainer}>
                 <CheckBox
+                 
                   onValueChange={checked => {
                     if (checked) {
                       setLeadsDetailsArr([...leadsDetailsArr, 'financeProj']);
@@ -234,34 +237,32 @@ const Leads = ({currentStep, setCurrentStep}) => {
                 />
                 <Text style={styles.CheckBoxLabel}>Insurance Quotes</Text>
               </View>
+              
+
+         
+
+          <View style={styles.CheckBoxContainer}>
+            <CheckBox
+             onCheckColor='#2b2b2b'
+              style={styles.CheckBox}
+              onValueChange={checked => {
+                console.log("isChec",)
+                if (checked) {
+                  setValue('isSendReport', "True");
+                } else {
+                  setValue('isSendReport', "False");
+                }
+              }}
+             value={isSendReport=="True" }
+            />
+            <Text style={styles.CheckBoxLabel}>Do you authorize us to send your report to the recommended
+            organizations that can help you with your needs? </Text>
+          </View>
             </View>
+
           )}
 
-          <Text style={styles.authorizationText}>
-            Do you authorize us to send your report to the recommended
-            organizations that can help you with your needs?
-          </Text>
-
-          <View style={{marginTop: 15}}>
-            <RadioButton
-              label="Yes"
-              value="True"
-              checked={watch('isSendReport') == 'True'}
-              name={'isSendReport'}
-              onChange={val => {
-                setValue('isSendReport', val);
-              }}
-            />
-            <RadioButton
-              label="No"
-              value="False"
-              checked={watch('isSendReport') == 'False'}
-              name={'isSendReport'}
-              onChange={val => {
-                setValue('isSendReport', val);
-              }}
-            />
-          </View>
+        
         </View>
       </ScrollView>
 

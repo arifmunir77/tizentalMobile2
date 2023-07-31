@@ -90,10 +90,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
     // setValue('f_beer_cave', selected.f_beer_cave);
     // setValue('f_24H_ops', selected.f_24H_ops);
   };
-  register('gasBrandConsideration');
-  register('numMPD');
-  register('numAutoDieselHose');
-
+   
   return (
     <View style={styles.container}>
       <ScrollView>

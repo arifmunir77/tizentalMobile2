@@ -51,10 +51,7 @@ const Login = () => {
       console.log('Failed to save login data:', error);
     }
   };
-
-  const handleLogin = () => {
-    navigation.navigate('Evalutation');
-  };
+ 
 
   const navigateToSignup = () => {
     navigation.navigate('Signup');
@@ -74,7 +71,7 @@ const Login = () => {
           // handle success
           console.log('res', response?.data);
           saveLoginData(response.data);
-          navigation.navigate('Evalutation');
+          navigation.navigate('Home');
           setIsLoading(false);
         })
         .catch(function (error) {

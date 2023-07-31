@@ -9,7 +9,6 @@ import {useAppState} from '../../hooks/useAppState';
 import Loader from './Loader';
 import axios from 'axios';
 
-
 const OperatingExpense = ({currentStep, setCurrentStep}) => {
   const [stepValues, setStepValues] = useAppState();
 
@@ -69,7 +68,7 @@ const OperatingExpense = ({currentStep, setCurrentStep}) => {
         );
       });
   };
-
+  let rentalType = stepValues?.rentalType;
   return (
     <View style={styles.contianer}>
       {isLoading && <Loader />}
@@ -219,7 +218,14 @@ Other  */}
           {/* 
 Managmenent cost  */}
 
-          <View style={styles.legendContainer}>
+        
+          {/* Managmenent cost  */}
+
+          {/*  User  */}
+
+          {rentalType == 'Yes' && (
+            <View>
+                <View style={styles.legendContainer}>
             <Image
               source={require('../../assets/images/reaload.png')}
               style={styles.legendImage}
@@ -237,28 +243,27 @@ Managmenent cost  */}
               }}
             />
           </View>
-          {/* Managmenent cost  */}
+              <View style={styles.legendContainer}>
+                <Image
+                  source={require('../../assets/images/user.png')}
+                  style={styles.legendImage}
+                />
+                <Text style={styles.label2}>Administrative costs</Text>
+              </View>
 
-          {/*  User  */}
+              <View>
+                <TextInput
+                  style={styles.input}
+                  name={'administrative_cost'}
+                  value={watch('administrative_cost')}
+                  onChangeText={value => {
+                    setValue('administrative_cost', value);
+                  }}
+                />
+              </View>
+            </View>
+          )}
 
-          <View style={styles.legendContainer}>
-            <Image
-              source={require('../../assets/images/user.png')}
-              style={styles.legendImage}
-            />
-            <Text style={styles.label2}>Administrative costs</Text>
-          </View>
-
-          <View>
-            <TextInput
-              style={styles.input}
-              name={'administrative_cost'}
-              value={watch('administrative_cost')}
-              onChangeText={value => {
-                setValue('administrative_cost', value);
-              }}
-            />
-          </View>
           {/* User */}
         </View>
       </ScrollView>

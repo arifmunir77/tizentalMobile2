@@ -11,14 +11,11 @@ import {useForm} from 'react-hook-form';
 
 const ExtraIncome = ({currentStep, setCurrentStep}) => {
   const [stepValues, setStepValues] = useAppState();
-
- 
+  console.log('stee', stepValues);
 
   const handlePrevStep = () => {
     setCurrentStep(currentStep - 1);
   };
-
-  const [checked, setChecked] = useState(false);
 
   const {register, setError, handleSubmit, formState, watch, reset, setValue} =
     useForm({
@@ -35,6 +32,8 @@ const ExtraIncome = ({currentStep, setCurrentStep}) => {
     setStepValues({...stepValues, ...data});
     setCurrentStep(currentStep + 1);
   };
+
+  let rentalType = stepValues?.rentalType;
 
   return (
     <View style={styles.contianer}>
@@ -60,6 +59,7 @@ const ExtraIncome = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('laundry_income', value);
               }}
+              editable={rentalType == 'No' ? false : true}
             />
           </View>
 
@@ -83,6 +83,7 @@ const ExtraIncome = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('parking_income', value);
               }}
+              editable={rentalType == 'No' ? false : true}
             />
           </View>
           {/* Parking */}
@@ -107,6 +108,7 @@ const ExtraIncome = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('storage_income', value);
               }}
+              editable={rentalType == 'No' ? false : true}
             />
           </View>
           {/* Storage */}
@@ -131,6 +133,7 @@ const ExtraIncome = ({currentStep, setCurrentStep}) => {
               onChangeText={value => {
                 setValue('antennas_income', value);
               }}
+              editable={rentalType == 'No' ? false : true}
             />
           </View>
           {/* Antenas  */}
@@ -156,6 +159,7 @@ Billboards  */}
               onChangeText={value => {
                 setValue('billboards_income', value);
               }}
+              editable={rentalType == 'No' ? false : true}
             />
           </View>
           {/* Antenas  */}
@@ -181,6 +185,7 @@ Other  */}
               onChangeText={value => {
                 setValue('other_income', value);
               }}
+              editable={rentalType == 'No' ? false : true}
             />
           </View>
           {/* Other  */}
@@ -196,6 +201,8 @@ Other  */}
                 }
               }}
               value={watch('elec_bill_by_tenants') == 'true'}
+              disabled={rentalType == 'No' ? true : false}
+
             />
             <Text style={styles.checkboxLabel}>
               Tenants pay their own electric bills
@@ -212,6 +219,7 @@ Other  */}
                 }
               }}
               value={watch('heat_bill_by_tenants') == 'true'}
+              disabled={rentalType == 'No' ? true : false}
             />
             <Text style={styles.checkboxLabel}>
               Tenants pay their own heat bills
