@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -19,8 +19,10 @@ import {TouchableOpacity} from 'react-native';
 import {useAppState} from '../../hooks/useAppState';
 import {useForm} from 'react-hook-form';
 import {mergeObjs} from '../../utils/ObjectUtils';
+import {BASE_URL} from '@env';
 
 import {SelectList} from 'react-native-dropdown-select-list';
+import axios from 'axios';
 
 const validationSchema = Yup.object().shape({
   gasBrandConsideration: Yup.string().required('Required'),
@@ -39,6 +41,9 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
     {key: '2', value: '5000 - 7000 Sq Ft Site'},
     {key: '2', value: '7000 - 9000 Sq Ft Site'},
   ];
+
+  const [projectTemplate, setProjectTemplate] = useState(null);
+  console.log('projectTemplate', projectTemplate);
 
   const {register, setError, handleSubmit, formState, setValue, reset, watch} =
     useForm({
@@ -73,35 +78,65 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
 
   const selectedViewProjectTemplate = selected => {
     console.log('sedd', selected);
-    selected = selected[0];
-    if (selected == undefined) return;
-    // setValue('gasBrandConsideration', selected.gasBrandConsideration);
-    // setValue('numMPD', selected.numMPD);
-    // setValue('numAutoDieselHose', selected.numAutoDieselHose);
-    // setValue('num_car_wash', selected.num_car_wash);
-    // setValue('qsrBrand', selected.qsrBrand);
-    // setValue('qsrSize', selected.qsrSize);
-    // setValue('retailTenantType', selected.retailTenantType);
-    // setValue('retailTenantSize', selected.retailTenantSize);
-    // setValue('store_type', selected.store_type);
-    // setValue('storeSize', selected.storeSize);
-    // setValue('f_freezer_door', selected.f_freezer_door);
-    // setValue('f_cooler_door', selected.f_cooler_door);
-    // setValue('f_beer_cave', selected.f_beer_cave);
-    // setValue('f_24H_ops', selected.f_24H_ops);
+
+    const selectedData = projectTemplate?.find(
+      item => item.template_name == selected,
+    );
+    console.log('selectedData', selectedData);
+
+    if (selectedData == undefined) return;
+    setValue('gasBrandConsideration', selectedData.gasBrandConsideration);
+    setValue('numMPD', selectedData.numMPD);
+    setValue('numAutoDieselHose', selectedData.numAutoDieselHose);
+    console.log(
+      "selectedData?.num_car_wash == ''",
+      selectedData?.num_car_wash == '',
+    );
+    if (
+      selectedData?.num_car_wash == '' ||
+      selectedData?.num_car_wash == undefined
+    ) {
+      setValue('numCarWash', 0);
+    } else {
+      setValue('numCarWash', selectedData.num_car_wash);
+    }
+
+    setValue('qsrBrand', selectedData.qsrBrand);
+    setValue('qsrSize', selectedData.qsrSize);
+    setValue('retailTenantType', selectedData.retailTenantType);
+    setValue('retailTenantSize', selectedData.retailTenantSize);
+    setValue('store_type', selectedData.store_type);
+    setValue('storeSize', selectedData.storeSize);
+    setValue('f_freezer_door', selectedData.f_freezer_door);
+    setValue('f_cooler_door', selectedData.f_cooler_door);
+    setValue('f_beer_cave', selectedData.f_beer_cave);
+    setValue('f_24H_ops', selectedData.f_24H_ops);
   };
-   
+
+  useEffect(() => {
+    const getSelectedViewProject = async () => {
+      let response = await axios.get(`${BASE_URL}viewProjectTemplate/`);
+      setProjectTemplate(response.data);
+    };
+    getSelectedViewProject();
+  }, []);
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.title}>Development Strategy</Text>
           <View>
-            <Text style={{marginBottom:10}}>Please select proposed development strategy</Text>
+            <Text style={{marginBottom: 10}}>
+              Please select proposed development strategy
+            </Text>
 
             <SelectList
               setSelected={val => selectedViewProjectTemplate(val)}
-              data={data}
+              data={projectTemplate?.map(item => ({
+                value: item.template_name,
+                label: item.template_name,
+              }))}
               save="value"
               boxStyles={{
                 borderRadius: 0,
@@ -109,7 +144,9 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               }}
             />
 
-            <Text style={{marginTop:10,marginBottom:10}}>Please make your selection</Text>
+            <Text style={{marginTop: 10, marginBottom: 10}}>
+              Please make your selection
+            </Text>
             <TextInput
               style={styles.input}
               placeholder="Gas Brand"
@@ -172,7 +209,9 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               <Text style={styles.error}>{errors.numCarWash?.message}</Text>
             )}
 
-            <Text style={{marginTop:10,marginBottom:10}}>Attached QSR (Quick Service Restaurant)</Text>
+            <Text style={{marginTop: 10, marginBottom: 10}}>
+              Attached QSR (Quick Service Restaurant)
+            </Text>
             <TextInput
               style={styles.input}
               placeholder="Fast Food Brand"
@@ -194,7 +233,9 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               value={watch('qsrSize')?.toString()}
             />
 
-            <Text style={{marginTop:10,marginBottom:10}}>Attached Retail Tenant</Text>
+            <Text style={{marginTop: 10, marginBottom: 10}}>
+              Attached Retail Tenant
+            </Text>
             <TextInput
               style={styles.input}
               name={'retailTenantType'}
@@ -216,7 +257,7 @@ const DevelopmentStrategy = ({currentStep, setCurrentStep}) => {
               value={watch('retailTenantSize')?.toString()}
             />
 
-            <Text style={{marginTop:10,marginBottom:10}}>Store Details</Text>
+            <Text style={{marginTop: 10, marginBottom: 10}}>Store Details</Text>
 
             <TextInput
               style={styles.input}

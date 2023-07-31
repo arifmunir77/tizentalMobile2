@@ -18,6 +18,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Loader from './formWizard/Loader';
 
+import {BASE_URL} from '@env';
+
 const validationSchema = Yup.object().shape({
   email: Yup.string().required('Required'),
   password: Yup.string().required('Required'),
@@ -66,7 +68,7 @@ const Login = () => {
       setIsLoading(true);
 
       axios
-        .post('https://tezintel.com/api/accounts/login/', data)
+        .post(`${BASE_URL}accounts/login/`, data)
         .then(function (response) {
           // handle success
           console.log('res', response?.data);

@@ -18,6 +18,7 @@ import {SelectList} from 'react-native-dropdown-select-list';
 import * as Yup from 'yup';
 import Loader from './formWizard/Loader';
 import axios from 'axios';
+import {BASE_URL} from '@env';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required('Required'),
@@ -46,7 +47,7 @@ const Signup = () => {
       setIsLoading(true);
 
       axios
-        .post('https://tezintel.com/api/accounts/signup/', data)
+        .post(`${BASE_URL}accounts/signup/`, data)
         .then(function (response) {
           // handle success
 

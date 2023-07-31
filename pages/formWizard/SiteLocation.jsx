@@ -31,10 +31,12 @@ import {mergeObjs} from '../../utils/ObjectUtils';
 
 import StepsComponent from '../../components/StepsComponent';
 
- 
 import Icon from 'react-native-vector-icons/Entypo';
 
+import {GOOGLE_MAP_API} from '@env';
+
 const SiteLocation = ({currentStep, setCurrentStep}) => {
+  console.log('GOOGLE_API', GOOGLE_MAP_API);
   const [stepValues, setStepValues] = useAppState();
 
   const {
@@ -67,9 +69,8 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
   const [selectedLocation, setSelectedLocation] = React.useState(null);
 
   const [isCompAddress, setIsCompAddress] = useState(false);
-  console.log('isCom', isCompAddress);
-
-  Geocoding.init('AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s');
+   
+  Geocoding.init(GOOGLE_MAP_API);
 
   const mapRef = useRef();
   const locationRef = useRef();
@@ -187,7 +188,7 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
           placeholder="Search Place"
           debounce={400}
           query={{
-            key: 'AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s',
+            key: GOOGLE_MAP_API,
             language: 'en',
           }}
           fetchDetails={true}
@@ -218,10 +219,9 @@ const SiteLocation = ({currentStep, setCurrentStep}) => {
             style={styles.shareBtn}
             disabled={!isCompAddress}
             onPress={shareLink}>
-            <Text style={styles.shareText}> 
-        <Icon name="share" size={30} color="white" />
-            
-             </Text>
+            <Text style={styles.shareText}>
+              <Icon name="share" size={30} color="white" />
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

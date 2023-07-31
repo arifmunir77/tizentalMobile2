@@ -9,14 +9,15 @@ import {useAppState} from '../../hooks/useAppState';
 import {useForm} from 'react-hook-form';
 import axios from 'axios';
 import Loader from './Loader';
+import {BASE_URL} from '@env';
 
 const Leads = ({currentStep, setCurrentStep}) => {
+   
   const [stepValues, setStepValues] = useAppState();
   const [isLoading, setIsLoading] = useState(false);
 
   const [leadsDetailsArr, setLeadsDetailsArr] = useState([]);
-
-  console.log('leadsDetailsArr', leadsDetailsArr);
+ 
 
   const {register, setError, handleSubmit, formState, watch, reset, setValue} =
     useForm({
@@ -28,10 +29,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
     });
 
   const isLeadsValue = watch('isLeads');
-
-  console.log('isLeadsValue', isLeadsValue);
-
-  console.log('ssss', stepValues);
+ 
   useEffect(() => {
     if (stepValues?.leadsDetailsArr) {
       setLeadsDetailsArr(stepValues?.leadsDetailsArr);
@@ -49,13 +47,10 @@ const Leads = ({currentStep, setCurrentStep}) => {
 
     setStepValues(req);
 
-    //  setCurrentStep(currentStep+1)
-    let serviceUrl = `/getCommercialReportInput/`;
-
     setIsLoading(true);
 
     axios
-      .post('https://tezintel.com/api/getCommercialReportInput/', req, {
+      .post(`${BASE_URL}getCommercialReportInput/`, req, {
         headers: {'Content-Type': 'multipart/form-data'},
       })
       .then(function (response) {
@@ -83,9 +78,8 @@ const Leads = ({currentStep, setCurrentStep}) => {
         alert(error.message);
       });
   };
-  let  isSendReport=watch('isSendReport') ;
-
-  console.log("isSen",isSendReport)
+  let isSendReport = watch('isSendReport');
+ 
   return (
     <View style={styles.container}>
       {isLoading && <Loader />}
@@ -130,7 +124,6 @@ const Leads = ({currentStep, setCurrentStep}) => {
 
               <View style={styles.CheckBoxContainer}>
                 <CheckBox
-                 
                   onValueChange={checked => {
                     if (checked) {
                       setLeadsDetailsArr([...leadsDetailsArr, 'financeProj']);
@@ -237,32 +230,28 @@ const Leads = ({currentStep, setCurrentStep}) => {
                 />
                 <Text style={styles.CheckBoxLabel}>Insurance Quotes</Text>
               </View>
-              
 
-         
-
-          <View style={styles.CheckBoxContainer}>
-            <CheckBox
-             onCheckColor='#2b2b2b'
-              style={styles.CheckBox}
-              onValueChange={checked => {
-                console.log("isChec",)
-                if (checked) {
-                  setValue('isSendReport', "True");
-                } else {
-                  setValue('isSendReport', "False");
-                }
-              }}
-             value={isSendReport=="True" }
-            />
-            <Text style={styles.CheckBoxLabel}>Do you authorize us to send your report to the recommended
-            organizations that can help you with your needs? </Text>
-          </View>
+              <View style={styles.CheckBoxContainer}>
+                <CheckBox
+                  onCheckColor="#2b2b2b"
+                  style={styles.CheckBox}
+                  onValueChange={checked => {
+                    console.log('isChec');
+                    if (checked) {
+                      setValue('isSendReport', 'True');
+                    } else {
+                      setValue('isSendReport', 'False');
+                    }
+                  }}
+                  value={isSendReport == 'True'}
+                />
+                <Text style={styles.CheckBoxLabel}>
+                  Do you authorize us to send your report to the recommended
+                  organizations that can help you with your needs?{' '}
+                </Text>
+              </View>
             </View>
-
           )}
-
-        
         </View>
       </ScrollView>
 

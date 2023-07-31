@@ -8,7 +8,7 @@ import {useForm} from 'react-hook-form';
 import {useAppState} from '../../hooks/useAppState';
 import Loader from './Loader';
 import axios from 'axios';
-
+import {BASE_URL} from "@env"
 const OperatingExpense = ({currentStep, setCurrentStep}) => {
   const [stepValues, setStepValues] = useAppState();
 
@@ -39,7 +39,7 @@ const OperatingExpense = ({currentStep, setCurrentStep}) => {
     setIsLoading(true);
 
     axios
-      .post('https://tezintel.com/api/getResidentialReportInput/', req, {
+      .post(`${BASE_URL}getResidentialReportInput/`, req, {
         headers: {'Content-Type': 'multipart/form-data'},
       })
       .then(function (response) {
