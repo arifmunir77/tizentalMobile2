@@ -107,39 +107,7 @@ const Signup = () => {
           </Text>
         </View>
         <View style={styles.formContainer}>
-          <View style={styles.selectStyle}>
-            <SelectList
-              setSelected={val => {
-                setValue('user_type', val);
-              }}
-              data={userTypeData}
-              save="value"
-              boxStyles={{
-                borderRadius: 5,
-                borderColor: '#ccc',
-              }}
-              placeholder="Select User"
-              search={false}
-            />
-          </View>
-
-          {user_type === 'Vendor' && (
-            <View style={styles.selectStyle}>
-              <SelectList
-                setSelected={val => {
-                  setValue('vendor_type', val);
-                }}
-                data={userVendorData}
-                save="value"
-                boxStyles={{
-                  borderRadius: 5,
-                  borderColor: '#ccc',
-                }}
-                search={false}
-                placeholder="Select Vendor Subtype"
-              />
-            </View>
-          )}
+          
 
           <TextInput
             style={styles.input}
@@ -195,6 +163,40 @@ const Signup = () => {
 
           {errors?.last_name && (
             <Text style={styles.error}>{errors?.last_name?.message}</Text>
+          )}
+
+<View style={styles.selectStyle}>
+            <SelectList
+              setSelected={val => {
+                setValue('user_type', val);
+              }}
+              data={userTypeData}
+              save="value"
+              boxStyles={{
+                borderRadius: 5,
+                borderColor: '#ccc',
+              }}
+              placeholder="Select User Type"
+              search={false}
+            />
+          </View>
+
+          {user_type === 'Vendor' && (
+            <View style={styles.selectStyle}>
+              <SelectList
+                setSelected={val => {
+                  setValue('vendor_type', val);
+                }}
+                data={userVendorData}
+                save="value"
+                boxStyles={{
+                  borderRadius: 5,
+                  borderColor: '#ccc',
+                }}
+                search={false}
+                placeholder="Select Vendor Subtype"
+              />
+            </View>
           )}
 
           <TouchableOpacity

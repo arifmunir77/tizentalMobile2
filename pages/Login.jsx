@@ -53,7 +53,6 @@ const Login = () => {
       console.log('Failed to save login data:', error);
     }
   };
- 
 
   const navigateToSignup = () => {
     navigation.navigate('Signup');
@@ -71,14 +70,14 @@ const Login = () => {
         .post(`${BASE_URL}accounts/login/`, data)
         .then(function (response) {
           // handle success
-          console.log('res', response?.data);
+
           saveLoginData(response.data);
           navigation.navigate('Home');
           setIsLoading(false);
         })
         .catch(function (error) {
           // handle error
-          alert(error?.message);
+          alert('User Credential is Invalid');
           setIsLoading(false);
         });
     } catch (error) {

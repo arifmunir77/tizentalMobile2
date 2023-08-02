@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   PermissionsAndroid,
+  Alert,
 } from 'react-native';
 import Pdf from 'react-native-pdf';
 
@@ -45,7 +46,9 @@ const ReportView = () => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         downloadFile();
       } else {
-        console.log('storage permission denied');
+        alert(
+          'Downloader App Storage Permission denied. Please enable from setting',
+        );
       }
     } catch (err) {
       console.warn(err);
@@ -112,9 +115,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   downloadButton: {
-    position: 'absolute', 
-    top: 0,  
-    right: 0,  
+    position: 'absolute',
+    top: 0,
+    right: 0,
     width: 50,
     height: 50,
     borderWidth: 0.5,
