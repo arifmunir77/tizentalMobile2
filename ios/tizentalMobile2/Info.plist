@@ -25,6 +25,23 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
+	<key>NSAllowsArbitraryLoads</key>
+<true/>
+<key>NSCameraUsageDescription</key>
+<string>Your message explaining why you need camera access</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Your message explaining why you need access to coarse location</string>
+
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Your message explaining why you need access to fine location</string>
+
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>Your message explaining why you need write access to photo library</string>
+
+<key>GMSApiKey</key>
+<string>AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s</string>
+
+
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>

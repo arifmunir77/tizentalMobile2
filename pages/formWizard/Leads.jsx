@@ -50,7 +50,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
     setIsLoading(true);
 
     axios
-      .post(`${BASE_URL}getCommercialReportInput/`, req, {
+      .post(`${`BASE_URL`}getCommercialReportInput/`, req, {
         headers: {'Content-Type': 'multipart/form-data'},
       })
       .then(function (response) {
