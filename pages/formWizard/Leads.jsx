@@ -50,7 +50,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
     setIsLoading(true);
 
     axios
-      .post(`${`BASE_URL`}getCommercialReportInput/`, req, {
+      .post(`${BASE_URL}getCommercialReportInput/`, req, {
         headers: {'Content-Type': 'multipart/form-data'},
       })
       .then(function (response) {
@@ -124,6 +124,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
 
               <View style={styles.CheckBoxContainer}>
                 <CheckBox
+              style={styles.CheckBox}
                   onValueChange={checked => {
                     if (checked) {
                       setLeadsDetailsArr([...leadsDetailsArr, 'financeProj']);
@@ -142,6 +143,7 @@ const Leads = ({currentStep, setCurrentStep}) => {
               </View>
               <View style={styles.CheckBoxContainer}>
                 <CheckBox
+                  style={styles.CheckBox}
                   onValueChange={checked => {
                     if (checked) {
                       setLeadsDetailsArr([...leadsDetailsArr, 'constBids']);
@@ -300,6 +302,11 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 10,
+    
+  },
+  CheckBox:{
+    width:20,
+    height:20
   },
   CheckBoxLabel: {
     marginLeft: 10,

@@ -37,6 +37,8 @@
             </dict>
         </dict>
     </dict>
+    <key>NSAppleMusicUsageDescription</key>
+  <string>YOUR TEXT</string>
     <key>NSCameraUsageDescription</key>
     <string>Your message explaining why you need camera access</string>
     <key>NSLocationWhenInUseUsageDescription</key>
@@ -45,8 +47,12 @@
     <string>Your message explaining why you need access to fine location</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>Your message explaining why you need write access to the photo library</string>
-    <key>GMSApiKey</key>
+     <key>GMSApiKey</key>
     <string>AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s</string>
+    <key>NSDocumentsFolderUsageDescription</key>
+<string></string>
+<key>NSDownloadsFolderUsageDescription</key>
+<string></string>
     <key>UILaunchStoryboardName</key>
     <string>LaunchScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
@@ -61,5 +67,25 @@
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    
+<key>UIAppFonts</key>
+<array>
+  <string>AntDesign.ttf</string>
+  <string>Entypo.ttf</string>
+  <string>EvilIcons.ttf</string>
+  <string>Feather.ttf</string>
+  <string>FontAwesome.ttf</string>
+  <string>FontAwesome5_Brands.ttf</string>
+  <string>FontAwesome5_Regular.ttf</string>
+  <string>FontAwesome5_Solid.ttf</string>
+  <string>Foundation.ttf</string>
+  <string>Ionicons.ttf</string>
+  <string>MaterialIcons.ttf</string>
+  <string>MaterialCommunityIcons.ttf</string>
+  <string>SimpleLineIcons.ttf</string>
+  <string>Octicons.ttf</string>
+  <string>Zocial.ttf</string>
+  <string>Fontisto.ttf</string>
+</array>
 </dict>
 </plist>

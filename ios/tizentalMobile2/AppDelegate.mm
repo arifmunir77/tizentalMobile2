@@ -1,11 +1,15 @@
 #import "AppDelegate.h"
+#import <GoogleMaps/GoogleMaps.h>
 
-#import <React/RCTBundleURLProvider.h>
+#import <React/RCTBundleURLProvider.h>	
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [GMSServices provideAPIKey:@"AIzaSyD2r6Sj32chxJxKl0Cpi0hyFPdXEICKb2s"];
+
+
   self.moduleName = @"tizentalMobile2";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.

@@ -1,11 +1,13 @@
-import React, {useState} from 'react';
-import {View, Text, Button, StyleSheet, PermissionsAndroid} from 'react-native';
-import {TouchableOpacity} from 'react-native';
-import {useAppState} from '../../hooks/useAppState';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {useForm} from 'react-hook-form';
+import React, { useState } from 'react';
+import { View, Text, Button, StyleSheet, PermissionsAndroid, Permission } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { useAppState } from '../../hooks/useAppState';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { useForm } from 'react-hook-form';
+import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
 
-const SiteImages = ({currentStep, setCurrentStep}) => {
+
+const SiteImages = ({ currentStep, setCurrentStep }) => {
   const [stepValues, setStepValues] = useAppState();
 
   console.log('steee', stepValues);
@@ -28,45 +30,74 @@ const SiteImages = ({currentStep, setCurrentStep}) => {
     defaultValues: stepValues,
     mode: 'onSubmit',
   });
-  const {errors} = formState;
+  const { errors } = formState;
 
   const submit = data => {
-    setStepValues({...stepValues, ...data});
+    setStepValues({ ...stepValues, ...data });
     setCurrentStep(currentStep + 1);
   };
 
   const handleFileUpload = async imgType => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: 'App Camera Permission',
-          message: 'App needs access to your camera ',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
 
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const options = {
-          title: 'Select Image',
-          storageOptions: {
-            skipBackup: true,
-            path: 'gallery',
+      if (Platform.OS == "android") {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: 'App Camera Permission',
+            message: 'App needs access to your camera ',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
           },
-        };
-        const result = await launchImageLibrary(options);
-        console.log('imgResult', result);
+        );
 
-        setValue(imgType, result);
-      } else {
-        console.log('Camera permission denied');
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          const options = {
+            title: 'Select Image',
+            storageOptions: {
+              skipBackup: true,
+              path: 'gallery',
+            },
+          };
+          const result = await launchImageLibrary(options);
+          console.log('imgResult', result);
+
+          setValue(imgType, result);
+        } else {
+          console.log('Camera permission denied');
+        }
       }
+      else {
+
+        const granted = await request(PERMISSIONS.IOS.CAMERA)
+        console.log("ddd", granted)
+        if (granted == "granted") {
+          const options = {
+            title: 'Select Image',
+            storageOptions: {
+              skipBackup: true,
+              path: 'gallery',
+            },
+          };
+          const result = await launchImageLibrary(options);
+          console.log('imgResult', result);
+  
+          setValue(imgType, result);
+
+        }
+        else {
+          console.log('Camera permission denied');
+        }
+
+      }
+
+
     } catch (error) {
       console.log('Document picker error:', error);
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -76,31 +107,53 @@ const SiteImages = ({currentStep, setCurrentStep}) => {
         <Text style={styles.subtitle}>
           Please upload images/pictures of the site:
         </Text>
-        <Button
-          title="Upload Site Images"
+        <TouchableOpacity
+          style={styles.btnWrapper}
           onPress={() => handleFileUpload('siteImages')}
-        />
+        >
+
+
+          <Text style={styles.buttonText}>
+
+            Site Image
+          </Text>
+        </TouchableOpacity>
         {siteImages && <Text>Selected File: {siteImages.name}</Text>}
 
         <Text style={styles.title}>Site Plans</Text>
         <Text style={styles.subtitle}>
           Please upload interior (inside) site plans:
         </Text>
-        <Button
-          title="Upload Interior Plans"
+        <TouchableOpacity
+          style={styles.btnWrapper}
           onPress={() => handleFileUpload('interiorSitePlans')}
-          style={styles.btn}
-        />
+        >
+
+
+          <Text style={styles.buttonText}>
+
+            Interior Plans
+          </Text>
+        </TouchableOpacity>
+
+
+
         {interiorPlans && <Text>Selected File: {interiorPlans.name}</Text>}
 
         <Text style={styles.subtitle}>
-          Please upload exterior (outside) site plans:
+          Exterior (outside) site
         </Text>
-        <Button
-          style={styles.btn}
-          title="Upload Exterior Plans"
+        <TouchableOpacity
+          style={styles.btnWrapper}
           onPress={() => handleFileUpload('exteriorSitePlans')}
-        />
+        >
+
+
+          <Text style={styles.buttonText}>
+
+            exterior (outside) site plans:
+          </Text>
+        </TouchableOpacity>
         {exteriorPlans && <Text>Selected File: {exteriorPlans.name}</Text>}
         {/* 
       <Button title="Submit" onPress={() => handleSubmit()} /> */}
@@ -134,9 +187,21 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  btn: {
-    marginBottom: 50,
-    padding: 30,
+  btnWrapper: {
+    width: "100%",
+    height: 40,
+    color: "white",
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: '#0080ff',
+
+  },
+  btnText: {
+    color: "white"
+
+
+
   },
   title: {
     fontSize: 20,
@@ -176,6 +241,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: "center"
   },
 });
 
