@@ -218,6 +218,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
+  checkbox:{
+  width:
+20,
+height:20}
 });
 
 export default Neighbourhood;

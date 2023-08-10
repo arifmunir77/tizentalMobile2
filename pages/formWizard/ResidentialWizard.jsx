@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
   stepperContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop:Platform.OS=="ios" &&  40,
 
     padding: 15,
   },

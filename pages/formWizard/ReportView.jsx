@@ -5,29 +5,24 @@ import {
   Text,
   TouchableOpacity,
   PermissionsAndroid,
- 
-  Platform
+  Platform,
 } from 'react-native';
-  //  import Pdf from 'react-native-pdf';
-  import {check, PERMISSIONS, RESULTS,request} from 'react-native-permissions';
+//  import Pdf from 'react-native-pdf';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
-  import PDFView from 'react-native-view-pdf';
-  import RNFetchBlob from 'rn-fetch-blob';
-
-
-
+import PDFView from 'react-native-view-pdf';
+import RNFetchBlob from 'rn-fetch-blob';
 
 import {useAppState} from '../../hooks/useAppState';
- 
+
 import Icon from 'react-native-vector-icons/Entypo';
- 
+
 const ReportView = () => {
   const [stepValues, setStepValues] = useAppState();
 
-   let pdfUrl = 'https://tezintel.com' + stepValues?.reportPath;
+  let pdfUrl = 'https://tezintel.com' + stepValues?.reportPath;
 
   // const pdfUrl = 'https://tezintel.com/static/rest_framework/report_temp/w_3ba7f7d1571d4da0bc10314527ed1a81/Report.pdf';
-
 
   console.log('pftdd', pdfUrl);
 
@@ -40,7 +35,7 @@ const ReportView = () => {
   }
 
   const requestStoragePermission = async () => {
-     console.log("tess")
+    console.log('tess');
     try {
       if (Platform.OS == 'android') {
         const granted = await PermissionsAndroid.request(
@@ -63,15 +58,7 @@ const ReportView = () => {
           );
         }
       } else {
-     
-        downloadFile()
-        // if (granted === 'granted') {
-        //   // downloadFile()
-        // } else {
-        //   alert(
-        //     'Downloader App Storage Permission denied. Please enable from setting',
-        //   );
-        // }
+        downloadFile();
       }
     } catch (err) {
       console.warn(err);
@@ -106,30 +93,25 @@ const ReportView = () => {
         alert('file downloaded successfully ');
       });
   };
- 
 
-  const resourceType = "file";
+  const resourceType = 'file';
 
   return (
     <View style={styles.container}>
-       
-     
       <TouchableOpacity
         onPress={requestStoragePermission}
         style={styles.downloadButton}>
         <Icon name="dots-three-vertical" size={30} color="white" />
       </TouchableOpacity>
-      
- 
-      <PDFView
-          fadeInDuration={250.0}
-          style={{ flex: 1, width: 400 }}
-           resource={pdfUrl && pdfUrl}
 
-          resourceType={"url"}
-          onLoad={() => console.log(`PDF rendered from ${resourceType}`)}
-          onError={(error) => console.log('Cannot render PDF', error)}
-        />
+      <PDFView
+        fadeInDuration={250.0}
+        style={{flex: 1, width: 400}}
+        resource={pdfUrl && pdfUrl}
+        resourceType={'url'}
+        onLoad={() => console.log(`PDF rendered from ${resourceType}`)}
+        onError={error => console.log('Cannot render PDF', error)}
+      />
     </View>
   );
 };
@@ -141,7 +123,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    
   },
   pdf: {
     flex: 1,
@@ -149,7 +130,7 @@ const styles = StyleSheet.create({
   },
   downloadButton: {
     position: 'absolute',
-    top: Platform.OS=="os"  ? "8%" :0,
+    top: Platform.OS == 'os' ? '8%' : 0,
     right: 0,
     width: 50,
     height: 50,

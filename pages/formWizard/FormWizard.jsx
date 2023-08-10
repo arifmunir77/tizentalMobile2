@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet,Platform} from 'react-native';
 import FocusedStatusBar from '../../components/FocusedStatusBar';
 import ProjectType from './ProjectType';
 import SiteLocation from './SiteLocation';
@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
   stepperContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop:Platform.OS=="ios" &&  40,
 
     padding: 15,
   },
